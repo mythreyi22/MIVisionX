@@ -10,6 +10,7 @@ MCW
 #ifndef _VX_EXT_RPP_H_
 #define _VX_EXT_RPP_H_
 
+
 #include <VX/vx.h>
 
 enum rpp_library
@@ -33,7 +34,5 @@ enum user_kernel_e
 //////////////////////////////////////////////////////////////////////
 //! \brief The utility functions
 vx_node createNode(vx_graph graph, vx_enum kernelEnum, vx_reference params[], vx_uint32 num);
-vx_reference getNodeParameterByIndex(vx_node node, vx_uint32 index);
-vx_status createGraphHandle(vx_node node, NeuralNetworkCommonHandle ** pHandle);
-vx_status releaseGraphHandle(vx_node node, NeuralNetworkCommonHandle * handle);
-int getEnvironmentVariable(const char* name);
+
+#endif //__KERNELS_H__
