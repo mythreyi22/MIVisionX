@@ -32,7 +32,7 @@ message("-- MIVisionX Version - ${VERSION}")
 add_subdirectory(amd_openvx)
 add_subdirectory(amd_openvx_extensions)
 add_subdirectory(apps)
-add_subdirectory(utilities)
+#add_subdirectory(utilities)
 
 install(DIRECTORY docs DESTINATION .)
 

@@ -36,6 +36,7 @@ set(CMAKE_INSTALL_PREFIX /opt/rocm/mivisionx)
 
 if(OpenCL_FOUND)
     add_subdirectory (amd_loomsl)
+    add_subdirectory (amd_rpp)
 endif(OpenCL_FOUND)
 
 if(OpenCL_FOUND AND miopengemm_FOUND AND miopen_FOUND)
