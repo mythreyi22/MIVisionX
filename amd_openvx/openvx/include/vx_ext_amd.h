@@ -172,6 +172,14 @@ enum vx_tensor_attribute_amd_e {
 	VX_TENSOR_MEMORY_TYPE     = VX_ATTRIBUTE_BASE(VX_ID_AMD, VX_TYPE_TENSOR) + 0x8,
 };
 
+//! \brief array Data attributes.
+
+enum vx_array_attribute_amd_e {
+	/*! \brief OpenCL buffer. <tt>cl_mem</tt>. */
+	VX_ARRAY_BUFFER_OPENCL   = VX_ATTRIBUTE_BASE(VX_ID_AMD, VX_TYPE_ARRAY) + 0x9,
+	VX_ARRAY_BUFFER_HIP   = VX_ATTRIBUTE_BASE(VX_ID_AMD, VX_TYPE_ARRAY) + 0x10,
+};
+
 /*! \brief These enumerations are given to the \c vxDirective API to enable/disable
 * platform optimizations and/or features. Directives are not optional and
 * usually are vendor-specific, by defining a vendor range of directives and

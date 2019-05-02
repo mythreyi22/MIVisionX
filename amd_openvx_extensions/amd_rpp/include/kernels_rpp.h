@@ -26,6 +26,7 @@ MCW
 #include <vx_ext_amd.h>
 #include <iostream>
 #include <string.h>
+#define ERRMSG(status, format, ...) printf("ERROR: " format, __VA_ARGS__), status
 
 #define VX_LIBRARY_RPP         1
 

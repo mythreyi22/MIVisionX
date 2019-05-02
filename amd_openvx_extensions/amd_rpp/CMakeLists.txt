@@ -25,7 +25,11 @@ set (CMAKE_CXX_STANDARD 11)
 cmake_policy(SET CMP0054 NEW)
 
 #find_package (RPP REQUIRED)
+find_package(OpenCL     REQUIRED)
 
+list(APPEND PACKAGE_DEPENDS PACKAGE OpenCL)
+
+include_directories(${OpenCL_INCLUDE_DIRS})
 include_directories (include)
 include_directories (../../amd_openvx/openvx/include/)
 

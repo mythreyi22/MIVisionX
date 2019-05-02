@@ -6253,6 +6253,18 @@ VX_API_ENTRY vx_status VX_API_CALL vxQueryArray(vx_array arr, vx_enum attribute,
 					status = VX_SUCCESS;
 				}
 				break;
+#if ENABLE_OPENCL
+		      case VX_ARRAY_ATTRIBUTE_BUFFER_OPENCL:
+				if (size == sizeof(cl_mem)) {
+					if (data->opencl_buffer) {
+						*(cl_mem *)ptr = data->opencl_buffer;
+						status = VX_SUCCESS;
+					 }
+				}
+				break;
+#endif
+			case VX_ARRAY_ATTRIBUTE_BUFFER_HIP:
+				break;
 			default:
 				status = VX_ERROR_NOT_SUPPORTED;
 				break;
