@@ -6253,6 +6253,15 @@ VX_API_ENTRY vx_status VX_API_CALL vxQueryArray(vx_array arr, vx_enum attribute,
 					status = VX_SUCCESS;
 				}
 				break;
+			case VX_ARRAY_ATTRIBUTE_BUFFER:
+				if (size == sizeof(vx_uint8)) {
+					if (data->buffer) {
+					ptr = data->buffer;
+					status = VX_SUCCESS;
+					}
+				}
+				break;
+
 #if ENABLE_OPENCL
 		      case VX_ARRAY_ATTRIBUTE_BUFFER_OPENCL:
 				if (size == sizeof(cl_mem)) {

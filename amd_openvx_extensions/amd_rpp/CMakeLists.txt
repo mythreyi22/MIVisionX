@@ -39,7 +39,9 @@ list (APPEND SOURCES
 	source/internal_publishKernels.cpp
 	)
 
+link_directories(/home/neel/Mythreyi/forked_MivisionX/AMD-RPP/build/)
 add_library(vx_rpp SHARED ${SOURCES})
+TARGET_LINK_LIBRARIES(vx_rpp brightness_contrast)
 
 #include_directories(${OpenCV_INCLUDE_DIRS})
 #target_link_libraries(vx_opencv ${OpenCV_LIBRARIES})

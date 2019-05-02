@@ -5,10 +5,10 @@ VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_brightness(vx_graph graph, vx_arra
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
     if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
-        vx_scalar ALPHA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &alpha);
-        vx_scalar BETA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &alpha);
-        vx_scalar HEIGHT = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &alpha);
-        vx_scalar WIDTH = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &alpha);
+        vx_scalar ALPHA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_INT32, &alpha);
+        vx_scalar BETA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_INT32, &beta);
+        vx_scalar HEIGHT = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &height);
+        vx_scalar WIDTH = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &width);
 
             vx_reference params[] = {
                 (vx_reference) pSrc,
