@@ -43,11 +43,7 @@ link_directories(/home/neel/Mythreyi/forked_MivisionX/AMD-RPP/build/)
 add_library(vx_rpp SHARED ${SOURCES})
 TARGET_LINK_LIBRARIES(vx_rpp brightness_contrast)
 
-#include_directories(${OpenCV_INCLUDE_DIRS})
-#target_link_libraries(vx_opencv ${OpenCV_LIBRARIES})
-#target_compile_definitions(vx_opencv PUBLIC USE_OPENCV_CONTRIB=0)
-
-#install (TARGETS vx_opencv DESTINATION lib)
+install (TARGETS vx_rpp DESTINATION lib)
 install (FILES include/vx_ext_rpp.h include/kernels_rpp.h DESTINATION include)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
