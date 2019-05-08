@@ -24,7 +24,7 @@ project (amd_rpp)
 set (CMAKE_CXX_STANDARD 11)
 cmake_policy(SET CMP0054 NEW)
 
-#find_package (RPP REQUIRED)
+find_package(RPP      REQUIRED)
 find_package(OpenCL     REQUIRED)
 
 list(APPEND PACKAGE_DEPENDS PACKAGE OpenCL)
@@ -32,14 +32,15 @@ list(APPEND PACKAGE_DEPENDS PACKAGE OpenCL)
 include_directories(${OpenCL_INCLUDE_DIRS})
 include_directories (include)
 include_directories (../../amd_openvx/openvx/include/)
+include_directories (/opt/rocm/rpp/include/)
 
 list (APPEND SOURCES
-	source/brightness_contrast.cpp
+	source/brightness.cpp
 	source/kernel_rpp.cpp
 	source/internal_publishKernels.cpp
 	)
 
-link_directories(/home/neel/Mythreyi/forked_MivisionX/AMD-RPP/build/)
+link_directories(/opt/rocm/rpp/lib/)
 add_library(vx_rpp SHARED ${SOURCES})
 TARGET_LINK_LIBRARIES(vx_rpp brightness_contrast)
 
