@@ -1,24 +1,19 @@
 #include "kernels_rpp.h"
 
-VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_brightness(vx_graph graph, vx_array pSrc, vx_array pDst, vx_int32  height, vx_int32 width, vx_float32 alpha, vx_float32 beta)
+VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_brightness(vx_graph graph, vx_image pSrc, vx_image pDst, vx_float32 alpha, vx_float32 beta)
 {
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
     if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
-        vx_scalar ALPHA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_INT32, &alpha);
-        vx_scalar BETA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_INT32, &beta);
-        vx_scalar HEIGHT = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &height);
-        vx_scalar WIDTH = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &width);
-
+        vx_scalar ALPHA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &alpha);
+        vx_scalar BETA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &beta);
             vx_reference params[] = {
                 (vx_reference) pSrc,
                 (vx_reference) pDst,
-                (vx_reference) HEIGHT,
-                (vx_reference) WIDTH,
                 (vx_reference) ALPHA,
                 (vx_reference) BETA
         };
-            node = createNode(graph, VX_KERNEL_BRIGHTNESS_AND_CONTRAST, params, 6);
+            node = createNode(graph, VX_KERNEL_BRIGHTNESS, params, 4);
     }
     return node;
 }

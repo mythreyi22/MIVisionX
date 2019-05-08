@@ -47,7 +47,7 @@ vx_status get_kernels_to_publish()
 	Kernel_List = new Kernellist(MAX_KERNELS);
 
 
-	STATUS_ERROR_CHECK(ADD_KERENEL(BrightnessAndContrast_Register));
+	STATUS_ERROR_CHECK(ADD_KERENEL(Brightness_Register));
 
 	return status;
 }

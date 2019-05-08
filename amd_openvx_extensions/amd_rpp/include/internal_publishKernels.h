@@ -30,8 +30,8 @@ extern "C" SHARED_PUBLIC vx_status VX_API_CALL vxPublishKernels(vx_context conte
 vx_status ADD_KERENEL(std::function<vx_status(vx_context)>);
 vx_status get_kernels_to_publish();
 
-vx_status BrightnessAndContrast_Register(vx_context);
+vx_status Brightness_Register(vx_context);
 
-#define VX_KERNEL_RPP_BRIGHTNESS_AND_CONTRAST_NAME           "org.rpp.BrightnessAndContrast"
+#define VX_KERNEL_RPP_BRIGHTNESS_NAME           "org.rpp.Brightness"
 
 #endif //_AMDVX_EXT__PUBLISH_KERNELS_H_
