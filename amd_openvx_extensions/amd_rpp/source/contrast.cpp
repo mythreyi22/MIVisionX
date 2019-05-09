@@ -28,24 +28,26 @@ THE SOFTWARE.
 
 #include "internal_publishKernels.h"
 
-#include </opt/rocm/rpp/include/rpp.h>
-#include </opt/rocm/rpp/include/rppdefs.h>
-#include </opt/rocm/rpp/include/rppi_image_augumentation_functions.h>
+#include <rpp.h>
+#include <rppdefs.h>
+#include <rppi_brightness_illumination_functions.h>
 
-struct BrightnessLocalData {
+struct ContrastLocalData {
 
 #if ENABLE_OPENCL
     RPPCommonHandle handle;
 #endif
     RppiSize dimensions;
-    RppPtr_t pSrc;
-    RppPtr_t pDst;
+    void * pSrc;
+    void * pDst;
     Rpp32f alpha;
-    Rpp32u beta;
+    Rpp32f beta;
+    Rpp32f newmax;
+    Rpp32f newmin;
 
 #if ENABLE_OPENCL
-    cl_mem cl_pSrc;
-    cl_mem cl_pDst;
+    cl_mem *cl_pSrc;
+    cl_mem *cl_pDst;
 #endif
 
 #if ENABLE_HIP
@@ -55,7 +57,7 @@ struct BrightnessLocalData {
 
 };
 
-static vx_status VX_CALLBACK validateBrightness(vx_node node, const vx_reference parameters[], vx_uint32 num, vx_meta_format metas[])
+static vx_status VX_CALLBACK validatecontrast(vx_node node, const vx_reference parameters[], vx_uint32 num, vx_meta_format metas[])
 {
  // check scalar alpha and beta type
     vx_status status = VX_SUCCESS;
@@ -65,7 +67,7 @@ static vx_status VX_CALLBACK validateBrightness(vx_node node, const vx_reference
     STATUS_ERROR_CHECK(vxQueryScalar((vx_scalar)parameters[2], VX_SCALAR_TYPE, &type, sizeof(type)));
     if(type != VX_TYPE_FLOAT32) return ERRMSG(VX_ERROR_INVALID_TYPE, "validate: Paramter: #2 type=%d (must be size)\n", type);
     STATUS_ERROR_CHECK(vxQueryScalar((vx_scalar)parameters[3], VX_SCALAR_TYPE, &type, sizeof(type)));
-    if(type != VX_TYPE_INT32) return ERRMSG(VX_ERROR_INVALID_TYPE, "validate: Paramter: #3 type=%d (must be size)\n", type);
+    if(type != VX_TYPE_FLOAT32) return ERRMSG(VX_ERROR_INVALID_TYPE, "validate: Paramter: #3 type=%d (must be size)\n", type);
 
     vx_image image;
     vx_df_image df_image = VX_DF_IMAGE_VIRT;
@@ -86,42 +88,31 @@ static vx_status VX_CALLBACK validateBrightness(vx_node node, const vx_reference
     return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK processBrightness(vx_node node, const vx_reference * parameters, vx_uint32 num)
+static vx_status VX_CALLBACK processcontrast(vx_node node, const vx_reference * parameters, vx_uint32 num)
 {
-    BrightnessLocalData * data = NULL;
+    ContrastLocalData * data = NULL;
     STATUS_ERROR_CHECK(vxQueryNode(node, VX_NODE_LOCAL_DATA_PTR, &data, sizeof(data)));
 
 #if ENABLE_OPENCL
 
     cl_command_queue handle = data->handle.cmdq;
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
-    data->alpha = 1;
-    rppi_brighten_1C8U_pln((void *)handle, (void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->alpha, data->beta);
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, data->cl_pSrc, sizeof(*data->cl_pSrc)));
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, data->cl_pDst, sizeof(*data->cl_pDst)));
+    data->beta = 0;
+    rppi_brighten_1C8U_pln(handle, data->cl_pSrc, data->dimensions, &data->cl_pDst,  data->alpha, data->beta);
     return VX_SUCCESS;
 
 #else
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
-    vx_size channels;
-    vx_df_image df_image = VX_DF_IMAGE_VIRT;
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_PLANES, &channels, sizeof(channels)));
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
-		if (df_image == VX_DF_IMAGE_U8 ){
-            std::cout<<"\n 1 channel";
-            rppi_brighten_1C8U_pln_host(data->pSrc, data->dimensions, data->pDst,  data->alpha, data->beta);
-        }
-        else if(df_image == VX_DF_IMAGE_RGB) {
-            std::cout<<"\n 3 channel";
-            rppi_brighten_3C8U_pln_host(data->pSrc, data->dimensions, data->pDst,  data->alpha, data->beta);
-        }
+    //rppi_brighten_1C8U_pln_host((Rpp8u*)data->pSrc, data->dimensions, (Rpp8u*)data->pDst,  data->alpha, data->beta);
     return VX_SUCCESS;
 #endif
 }
 
-static vx_status VX_CALLBACK initializeBrightness(vx_node node, const vx_reference *parameters, vx_uint32 num)
+static vx_status VX_CALLBACK initializecontrast(vx_node node, const vx_reference *parameters, vx_uint32 num)
 {
-    BrightnessLocalData * data = new BrightnessLocalData;
+    ContrastLocalData * data = new ContrastLocalData;
     memset(data, 0, sizeof(*data));
 
 #if ENABLE_OPENCL
@@ -135,7 +126,7 @@ static vx_status VX_CALLBACK initializeBrightness(vx_node node, const vx_referen
     STATUS_ERROR_CHECK(vxCopyScalar((vx_scalar)parameters[3], &data->beta, VX_READ_ONLY, VX_MEMORY_TYPE_HOST));
 
 #if ENABLE_OPENCL
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, data->cl_pSrc, sizeof(*data->cl_pSrc)));
 #else
     //STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, data->pSrc, sizeof(data->pSrc)));
 #endif
@@ -145,22 +136,22 @@ static vx_status VX_CALLBACK initializeBrightness(vx_node node, const vx_referen
     return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK uninitializeBrightness(vx_node node, const vx_reference *parameters, vx_uint32 num)
+static vx_status VX_CALLBACK uninitializecontrast(vx_node node, const vx_reference *parameters, vx_uint32 num)
 {
     return VX_SUCCESS;
 }
 
-vx_status Brightness_Register(vx_context context)
+vx_status contrast_Register(vx_context context)
 {
 	vx_status status = VX_SUCCESS;
 // add kernel to the context with callbacks
-    vx_kernel kernel = vxAddUserKernel(context, "org.rpp.Brightness",
-            VX_KERNEL_BRIGHTNESS,
-            processBrightness,
+    vx_kernel kernel = vxAddUserKernel(context, "org.rpp.contrast",
+            VX_KERNEL_contrast,
+            processcontrast,
             4,
-            validateBrightness,
-            initializeBrightness,
-            uninitializeBrightness);
+            validatecontrast,
+            initializecontrast,
+            uninitializecontrast);
 
     ERROR_CHECK_OBJECT(kernel);
     #if ENABLE_OPENCL

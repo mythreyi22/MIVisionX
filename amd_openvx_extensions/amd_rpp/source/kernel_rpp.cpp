@@ -1,12 +1,12 @@
 #include "kernels_rpp.h"
 
-VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_brightness(vx_graph graph, vx_image pSrc, vx_image pDst, vx_float32 alpha, vx_float32 beta)
+VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_brightness(vx_graph graph, vx_image pSrc, vx_image pDst, vx_float32 alpha, vx_int32 beta)
 {
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
     if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
         vx_scalar ALPHA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &alpha);
-        vx_scalar BETA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &beta);
+        vx_scalar BETA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_INT32, &beta);
             vx_reference params[] = {
                 (vx_reference) pSrc,
                 (vx_reference) pDst,

@@ -31,7 +31,9 @@ vx_status ADD_KERENEL(std::function<vx_status(vx_context)>);
 vx_status get_kernels_to_publish();
 
 vx_status Brightness_Register(vx_context);
+vx_status Contrast_Register(vx_context);
 
 #define VX_KERNEL_RPP_BRIGHTNESS_NAME           "org.rpp.Brightness"
+#define VX_KERNEL_RPP_CONTRAST_NAME           "org.rpp.Contrast"
 
 #endif //_AMDVX_EXT__PUBLISH_KERNELS_H_
