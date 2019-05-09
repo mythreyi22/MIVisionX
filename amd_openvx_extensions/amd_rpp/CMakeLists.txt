@@ -19,12 +19,12 @@
 # THE SOFTWARE.
 
 cmake_minimum_required (VERSION 2.8)
-project (amd_rpp)
+project (rpp)
 
 set (CMAKE_CXX_STANDARD 11)
 cmake_policy(SET CMP0054 NEW)
 
-find_package(RPP      REQUIRED)
+#find_package(RPP      REQUIRED)
 find_package(OpenCL     REQUIRED)
 
 list(APPEND PACKAGE_DEPENDS PACKAGE OpenCL)
@@ -42,7 +42,7 @@ list (APPEND SOURCES
 
 link_directories(/opt/rocm/rpp/lib/)
 add_library(vx_rpp SHARED ${SOURCES})
-TARGET_LINK_LIBRARIES(vx_rpp brightness_contrast)
+TARGET_LINK_LIBRARIES(vx_rpp amd_rpp)
 
 install (TARGETS vx_rpp DESTINATION lib)
 install (FILES include/vx_ext_rpp.h include/kernels_rpp.h DESTINATION include)

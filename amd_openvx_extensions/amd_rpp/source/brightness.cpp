@@ -28,9 +28,9 @@ THE SOFTWARE.
 
 #include "internal_publishKernels.h"
 
-#include <rpp.h>
-#include <rppdefs.h>
-#include <rppi_brightness_illumination_functions.h>
+#include </opt/rocm/rpp/include/rpp.h>
+#include </opt/rocm/rpp/include/rppdefs.h>
+#include </opt/rocm/rpp/include/rppi_image_augumentation_functions.h>
 
 struct BrightnessLocalData {
 
@@ -38,10 +38,10 @@ struct BrightnessLocalData {
     RPPCommonHandle handle;
 #endif
     RppiSize dimensions;
-    void * pSrc;
-    void * pDst;
+    RppPtr_t pSrc;
+    RppPtr_t pDst;
     Rpp32f alpha;
-    Rpp32f beta;
+    Rpp32u beta;
 
 #if ENABLE_OPENCL
     cl_mem *cl_pSrc;
@@ -65,13 +65,13 @@ static vx_status VX_CALLBACK validateBrightness(vx_node node, const vx_reference
     STATUS_ERROR_CHECK(vxQueryScalar((vx_scalar)parameters[2], VX_SCALAR_TYPE, &type, sizeof(type)));
     if(type != VX_TYPE_FLOAT32) return ERRMSG(VX_ERROR_INVALID_TYPE, "validate: Paramter: #2 type=%d (must be size)\n", type);
     STATUS_ERROR_CHECK(vxQueryScalar((vx_scalar)parameters[3], VX_SCALAR_TYPE, &type, sizeof(type)));
-    if(type != VX_TYPE_FLOAT32) return ERRMSG(VX_ERROR_INVALID_TYPE, "validate: Paramter: #3 type=%d (must be size)\n", type);
+    if(type != VX_TYPE_INT32) return ERRMSG(VX_ERROR_INVALID_TYPE, "validate: Paramter: #3 type=%d (must be size)\n", type);
 
     vx_image image;
     vx_df_image df_image = VX_DF_IMAGE_VIRT;
     STATUS_ERROR_CHECK(vxQueryParameter(param, VX_PARAMETER_ATTRIBUTE_REF, &image, sizeof(vx_image)));
     STATUS_ERROR_CHECK(vxQueryImage(image, VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
-		if (df_image != VX_DF_IMAGE_U8)
+		if (df_image != VX_DF_IMAGE_U8 || df_image != VX_DF_IMAGE_RGB)
 			status = VX_ERROR_INVALID_VALUE;
     STATUS_ERROR_CHECK(vxSetMetaFormatAttribute(metas[1], VX_IMAGE_FORMAT, &df_image, sizeof(df_image)));
 
@@ -104,8 +104,17 @@ static vx_status VX_CALLBACK processBrightness(vx_node node, const vx_reference 
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
     vx_size channels;
+    vx_df_image df_image = VX_DF_IMAGE_VIRT;
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_PLANES, &channels, sizeof(channels)));
-    rppi_brighten_1C8U_pln_host((Rpp8u*)data->pSrc, data->dimensions, (Rpp8u*)data->pDst,  data->alpha, data->beta);
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
+		if (df_image == VX_DF_IMAGE_U8 ){
+            std::cout<<"\n 1 channel";
+            rppi_brighten_1C8U_pln_host(data->pSrc, data->dimensions, data->pDst,  data->alpha, data->beta);
+        }
+        else if(df_image == VX_DF_IMAGE_RGB) {
+            std::cout<<"\n 3 channel";
+            rppi_brighten_3C8U_pln_host(data->pSrc, data->dimensions, data->pDst,  data->alpha, data->beta);
+        }
     return VX_SUCCESS;
 #endif
 }
