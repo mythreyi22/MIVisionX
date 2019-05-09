@@ -155,6 +155,7 @@ enum vx_image_attribute_amd_e {
 	VX_IMAGE_ATTRIBUTE_AMD_ENABLE_USER_BUFFER_OPENCL = VX_ATTRIBUTE_BASE(VX_ID_AMD, VX_TYPE_IMAGE) + 0x03,
 	/*! \brief OpenCL buffer stride. Use a <tt>\ref cl_uint</tt> parameter.*/
 	VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER_STRIDE      = VX_ATTRIBUTE_BASE(VX_ID_AMD, VX_TYPE_IMAGE) + 0x04,
+        VX_IMAGE_ATTRIBUTE_BUFFER      = VX_ATTRIBUTE_BASE(VX_ID_AMD, VX_TYPE_IMAGE) + 0x05,
 };
 
 /*! \brief tensor Data attributes.
