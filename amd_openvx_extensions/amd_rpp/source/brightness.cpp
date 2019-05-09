@@ -33,10 +33,13 @@ THE SOFTWARE.
 #include <rppi_brightness_illumination_functions.h>
 
 struct BrightnessLocalData {
-    RPPCommonHandle * handle;
-    Rpp8u *pSrc;
+
+#if ENABLE_OPENCL
+    RPPCommonHandle handle;
+#endif
     RppiSize dimensions;
-    Rpp8u *pDst;
+    void * pSrc;
+    void * pDst;
     Rpp32f alpha;
     Rpp32f beta;
 
@@ -90,15 +93,18 @@ static vx_status VX_CALLBACK processBrightness(vx_node node, const vx_reference 
 
 #if ENABLE_OPENCL
 
-    cl_command_queue handle = data->handle->cmdq;
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, data->cl_pSrc, sizeof(data->cl_pSrc)));
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, data->cl_pDst, sizeof(data->cl_pDst)));
-    //rppi_brighten_1C8U_pln(handle, &data->cl_pSrc, data->dimensions, &data->cl_pDst,  data->alpha, data->beta);
+    cl_command_queue handle = data->handle.cmdq;
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, data->cl_pSrc, sizeof(*data->cl_pSrc)));
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, data->cl_pDst, sizeof(*data->cl_pDst)));
+    data->alpha = 1;
+    rppi_brighten_1C8U_pln(handle, data->cl_pSrc, data->dimensions, &data->cl_pDst,  data->alpha, data->beta);
     return VX_SUCCESS;
 
 #else
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, data->pSrc, sizeof(Rpp8u)));
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, data->pDst, sizeof(Rpp8u)));
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
+    vx_size channels;
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_PLANES, &channels, sizeof(channels)));
     rppi_brighten_1C8U_pln_host((Rpp8u*)data->pSrc, data->dimensions, (Rpp8u*)data->pDst,  data->alpha, data->beta);
     return VX_SUCCESS;
 #endif
@@ -110,7 +116,7 @@ static vx_status VX_CALLBACK initializeBrightness(vx_node node, const vx_referen
     memset(data, 0, sizeof(*data));
 
 #if ENABLE_OPENCL
-    STATUS_ERROR_CHECK(vxQueryNode(node, VX_NODE_ATTRIBUTE_AMD_OPENCL_COMMAND_QUEUE, &data->handle->cmdq, sizeof(data->handle->cmdq)));
+    STATUS_ERROR_CHECK(vxQueryNode(node, VX_NODE_ATTRIBUTE_AMD_OPENCL_COMMAND_QUEUE, &data->handle.cmdq, sizeof(data->handle.cmdq)));
 #endif
 
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_HEIGHT, &data->dimensions.height, sizeof(data->dimensions.height)));
@@ -119,7 +125,11 @@ static vx_status VX_CALLBACK initializeBrightness(vx_node node, const vx_referen
     STATUS_ERROR_CHECK(vxCopyScalar((vx_scalar)parameters[2], &data->alpha, VX_READ_ONLY, VX_MEMORY_TYPE_HOST));
     STATUS_ERROR_CHECK(vxCopyScalar((vx_scalar)parameters[3], &data->beta, VX_READ_ONLY, VX_MEMORY_TYPE_HOST));
 
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->pSrc, sizeof(data->pSrc)));
+#if ENABLE_OPENCL
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, data->cl_pSrc, sizeof(*data->cl_pSrc)));
+#else
+    //STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, data->pSrc, sizeof(data->pSrc)));
+#endif
 
     STATUS_ERROR_CHECK(vxSetNodeAttribute(node, VX_NODE_LOCAL_DATA_PTR, &data, sizeof(data)));
 
@@ -144,10 +154,12 @@ vx_status Brightness_Register(vx_context context)
             uninitializeBrightness);
 
     ERROR_CHECK_OBJECT(kernel);
-    #ifdef ENABLE_OPENCL
+    #if ENABLE_OPENCL
     // enable OpenCL buffer access since the kernel_f callback uses OpenCL buffers instead of host accessible buffers
     vx_bool enableBufferAccess = vx_true_e;
     STATUS_ERROR_CHECK(vxSetKernelAttribute(kernel, VX_KERNEL_ATTRIBUTE_AMD_OPENCL_BUFFER_ACCESS_ENABLE, &enableBufferAccess, sizeof(enableBufferAccess)));
+    #else
+    vx_bool enableBufferAccess = vx_false_e;
     #endif
 	if (kernel)
 	{

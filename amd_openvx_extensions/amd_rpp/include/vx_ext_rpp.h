@@ -24,11 +24,11 @@ THE SOFTWARE.
 #ifndef _VX_EXT_RPP_H_
 #define _VX_EXT_RPP_H_
 
-#define ENABLE_OPENCL 1
+#define ENABLE_OPENCL 0
 #include <VX/vx.h>
 #include "kernels_rpp.h"
 
-#ifdef ENABLE_OPENCL
+#if ENABLE_OPENCL
 #include <CL/cl.h>
 #endif
 

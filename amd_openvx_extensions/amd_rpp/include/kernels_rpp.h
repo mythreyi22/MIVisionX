@@ -24,6 +24,7 @@ THE SOFTWARE.
 #ifndef _VX_KERNELS_RPP_H_
 #define _VX_KERNELS_RPP_H_
 
+#define OPENVX_KHR_RPP   "vx_khr_rpp"
 //////////////////////////////////////////////////////////////////////
 // SHARED_PUBLIC - shared sybols for export
 // STITCH_API_ENTRY - export API symbols
@@ -33,6 +34,11 @@ THE SOFTWARE.
 #define SHARED_PUBLIC extern "C" __attribute__ ((visibility ("default")))
 #endif
 
+#define STATUS_ERROR_CHECK(call){vx_status status = call; if(status!= VX_SUCCESS) return status;}
+#define PARAM_ERROR_CHECK(call){vx_status status = call; if(status!= VX_SUCCESS) goto exit;}
+//! \brief The macro for error checking from OpenVX object.
+#define ERROR_CHECK_OBJECT(obj)  { vx_status status = vxGetStatus((vx_reference)(obj)); if(status != VX_SUCCESS){ vxAddLogEntry((vx_reference)(obj), status, "ERROR: failed with status = (%d) at " __FILE__ "#%d\n", status, __LINE__); return status; }}
+
 //////////////////////////////////////////////////////////////////////
 // common header files
 #include <VX/vx.h>
@@ -40,6 +46,7 @@ THE SOFTWARE.
 #include <vx_ext_amd.h>
 #include <iostream>
 #include <string.h>
+
 #define ERRMSG(status, format, ...) printf("ERROR: " format, __VA_ARGS__), status
 
 #define VX_LIBRARY_RPP         1
@@ -53,10 +60,17 @@ enum vx_kernel_ext_amd_rpp_e
 //////////////////////////////////////////////////////////////////////
 //! \brief Common data shared across all nodes in a graph
 struct RPPCommonHandle {
+#if ENABLE_OPENCL
     cl_command_queue cmdq;
+#endif
+    int count;
+    bool exhaustiveSearch;
 };
 //////////////////////////////////////////////////////////////////////
 //! \brief The utility functions
 vx_node createNode(vx_graph graph, vx_enum kernelEnum, vx_reference params[], vx_uint32 num);
+vx_status createGraphHandle(vx_node node, RPPCommonHandle ** pHandle);
+vx_status releaseGraphHandle(vx_node node, RPPCommonHandle * handle);
+int getEnvironmentVariable(const char* name);
 
 #endif //__KERNELS_H__
