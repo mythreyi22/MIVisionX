@@ -34,9 +34,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_INSTALL_PREFIX /opt/rocm/mivisionx)
 
+add_subdirectory (amd_rpp)
+
 if(OpenCL_FOUND)
     add_subdirectory (amd_loomsl)
-    add_subdirectory (amd_rpp)
 endif(OpenCL_FOUND)
 
 if(OpenCL_FOUND AND miopengemm_FOUND AND miopen_FOUND)
