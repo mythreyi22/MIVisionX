@@ -18,6 +18,38 @@ VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_brightness(vx_graph graph, vx_imag
     return node;
 }
 
+VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_contrast(vx_graph graph, vx_image pSrc, vx_image pDst, vx_int32 max, vx_int32 min)
+{
+    vx_node node = NULL;
+    vx_context context = vxGetContext((vx_reference)graph);
+    if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
+        vx_scalar MAX = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_INT32, &max);
+        vx_scalar MIN = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_INT32, &min);
+            vx_reference params[] = {
+                (vx_reference) pSrc,
+                (vx_reference) pDst,
+                (vx_reference) MAX,
+                (vx_reference) MIN
+        };
+            node = createNode(graph, VX_KERNEL_CONTRAST, params, 4);
+    }
+    return node;
+}
+
+
+VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_blur(vx_graph graph, vx_image pSrc, vx_image pDst)
+{
+    vx_node node = NULL;
+    vx_context context = vxGetContext((vx_reference)graph);
+    if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
+        vx_reference params[] = {
+            (vx_reference) pSrc,
+            (vx_reference) pDst,
+        };
+            node = createNode(graph, VX_KERNEL_BLUR, params, 2);
+    }
+    return node;
+}
 // utility functions
 vx_node createNode(vx_graph graph, vx_enum kernelEnum, vx_reference params[], vx_uint32 num)
 {

@@ -56,6 +56,7 @@ enum vx_kernel_ext_amd_rpp_e
 {
     VX_KERNEL_BRIGHTNESS  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x001,
     VX_KERNEL_CONTRAST  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x002,
+    VX_KERNEL_BLUR  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x003,
 };
 
 //////////////////////////////////////////////////////////////////////

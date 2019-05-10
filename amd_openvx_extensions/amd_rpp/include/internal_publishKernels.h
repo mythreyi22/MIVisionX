@@ -32,8 +32,10 @@ vx_status get_kernels_to_publish();
 
 vx_status Brightness_Register(vx_context);
 vx_status Contrast_Register(vx_context);
+vx_status Blur_Register(vx_context);
 
 #define VX_KERNEL_RPP_BRIGHTNESS_NAME           "org.rpp.Brightness"
-#define VX_KERNEL_RPP_CONTRAST_NAME           "org.rpp.Contrast"
+#define VX_KERNEL_RPP_CONTRAST_NAME             "org.rpp.Contrast"
+#define VX_KERNEL_RPP_BLUR_NAME                 "org.rpp.Blur"
 
 #endif //_AMDVX_EXT__PUBLISH_KERNELS_H_
