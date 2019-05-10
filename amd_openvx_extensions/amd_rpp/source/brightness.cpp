@@ -96,7 +96,7 @@ static vx_status VX_CALLBACK processBrightness(vx_node node, const vx_reference 
     cl_command_queue handle = data->handle.cmdq;
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
-    rppi_brighten_1C8U_pln((void *)handle, (void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->alpha, data->beta);
+    rppi_brighten_1C8U_pln((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->alpha, data->beta, (void *)handle);
     return VX_SUCCESS;
 
 #else
