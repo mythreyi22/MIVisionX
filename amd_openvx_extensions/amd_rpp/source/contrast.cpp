@@ -131,8 +131,8 @@ struct ContrastLocalData {
     RppiSize dimensions;
     void * pSrc;
     void * pDst;
-    Rpp32f max;
-    Rpp32f min;
+    Rpp32u max;
+    Rpp32u min;
 
 #if ENABLE_OPENCL
     cl_mem cl_pSrc;
@@ -193,7 +193,7 @@ static vx_status VX_CALLBACK processcontrast(vx_node node, const vx_reference * 
 #else
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
-    rppi_brighten_1C8U_pln_host((Rpp8u*)data->pSrc, data->dimensions, (Rpp8u*)data->pDst,  data->alpha, data->beta);
+    rppi_contrast_1C8U_pln_host(data->pSrc, data->dimensions ,data->pDst, data->min, data->max);
     return VX_SUCCESS;
 #endif
 }
