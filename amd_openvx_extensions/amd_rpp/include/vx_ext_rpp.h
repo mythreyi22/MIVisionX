@@ -27,10 +27,6 @@ THE SOFTWARE.
 #include <VX/vx.h>
 #include "kernels_rpp.h"
 
-//#ifndef ENABLE_OPENCL
-//#define ENABLE_OPENCL 1
-//#endif
-
 #if ENABLE_OPENCL
 #include <CL/cl.h>
 #endif
@@ -43,5 +39,7 @@ THE SOFTWARE.
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_brightness(vx_graph graph, vx_image pSrc, vx_image pDst, vx_float32 alpha, vx_int32 beta);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_contrast(vx_graph graph, vx_image pSrc, vx_image pDst, vx_uint32 max, vx_uint32 min);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_blur(vx_graph graph, vx_image pSrc, vx_image pDst);
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Flip(vx_graph graph, vx_image pSrc, vx_image pDst, vx_int32 flipAxis);
+
 
 #endif
