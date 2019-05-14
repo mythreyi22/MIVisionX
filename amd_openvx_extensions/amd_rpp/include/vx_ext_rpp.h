@@ -40,6 +40,6 @@ extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_brightness(vx_graph gr
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_contrast(vx_graph graph, vx_image pSrc, vx_image pDst, vx_uint32 max, vx_uint32 min);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_blur(vx_graph graph, vx_image pSrc, vx_image pDst);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Flip(vx_graph graph, vx_image pSrc, vx_image pDst, vx_int32 flipAxis);
-
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Hue(vx_graph graph, vx_image pSrc, vx_image pDst, vx_float32 hueShift);
 
 #endif

@@ -34,10 +34,12 @@ vx_status Brightness_Register(vx_context);
 vx_status Contrast_Register(vx_context);
 vx_status Blur_Register(vx_context);
 vx_status Flip_Register(vx_context);
+vx_status Hue_Register(vx_context);
 
 #define VX_KERNEL_RPP_BRIGHTNESS_NAME           "org.rpp.Brightness"
 #define VX_KERNEL_RPP_CONTRAST_NAME             "org.rpp.Contrast"
 #define VX_KERNEL_RPP_BLUR_NAME                 "org.rpp.Blur"
 #define VX_KERNEL_RPP_FLIP_NAME                 "org.rpp.Flip"
+#define VX_KERNEL_RPP_FLIP_NAME                 "org.rpp.Hue"
 
 #endif //_AMDVX_EXT__PUBLISH_KERNELS_H_

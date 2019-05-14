@@ -35,6 +35,7 @@ list (APPEND SOURCES
 	source/contrast.cpp
 	source/blur.cpp
 	source/flip.cpp
+	source/hue.cpp
 	source/kernel_rpp.cpp
 	source/internal_publishKernels.cpp
 	)

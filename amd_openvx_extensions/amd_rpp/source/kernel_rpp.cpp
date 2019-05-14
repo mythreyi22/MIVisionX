@@ -67,6 +67,23 @@ VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_Flip(vx_graph graph, vx_image pSrc
     return node;
 }
 
+// Creating node for Hue
+VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_Hue(vx_graph graph, vx_image pSrc, vx_image pDst, vx_float32 hueShift)
+{
+    vx_node node = NULL;
+    vx_context context = vxGetContext((vx_reference)graph);
+    if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
+        vx_scalar HUESHIFT = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &hueShift);
+        vx_reference params[] = {
+            (vx_reference) pSrc,
+            (vx_reference) pDst,
+            (vx_reference) HUESHIFT,
+        };
+            node = createNode(graph, VX_KERNEL_FLIP, params, 3);
+    }
+    return node;
+}
+
 // utility functions
 vx_node createNode(vx_graph graph, vx_enum kernelEnum, vx_reference params[], vx_uint32 num)
 {

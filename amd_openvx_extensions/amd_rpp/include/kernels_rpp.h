@@ -58,6 +58,7 @@ enum vx_kernel_ext_amd_rpp_e
     VX_KERNEL_CONTRAST  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x002,
     VX_KERNEL_BLUR  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x003,
     VX_KERNEL_FLIP  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x004,
+    VX_KERNEL_HUE  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x005,
 };
 
 //////////////////////////////////////////////////////////////////////
