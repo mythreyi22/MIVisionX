@@ -79,7 +79,24 @@ VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_Hue(vx_graph graph, vx_image pSrc,
             (vx_reference) pDst,
             (vx_reference) HUESHIFT,
         };
-            node = createNode(graph, VX_KERNEL_FLIP, params, 3);
+            node = createNode(graph, VX_KERNEL_HUE, params, 3);
+    }
+    return node;
+}
+
+// Creating node for Saturation
+VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_Saturation(vx_graph graph, vx_image pSrc, vx_image pDst, vx_float32 saturationFactor)
+{
+    vx_node node = NULL;
+    vx_context context = vxGetContext((vx_reference)graph);
+    if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
+        vx_scalar SATURATIONFACTOR = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &saturationFactor);
+        vx_reference params[] = {
+            (vx_reference) pSrc,
+            (vx_reference) pDst,
+            (vx_reference) SATURATIONFACTOR,
+        };
+            node = createNode(graph, VX_KERNEL_SATURATION, params, 3);
     }
     return node;
 }
