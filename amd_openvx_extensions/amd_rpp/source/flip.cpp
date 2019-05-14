@@ -84,12 +84,12 @@ static vx_status VX_CALLBACK processFlip(vx_node node, const vx_reference * para
     FlipLocalData * data = NULL;
     STATUS_ERROR_CHECK(vxQueryNode(node, VX_NODE_LOCAL_DATA_PTR, &data, sizeof(data)));
 
+    RppiAxis rpp_flipaxis = (RppiAxis)data->flipAxis;
 #if ENABLE_OPENCL
 
     cl_command_queue handle = data->handle.cmdq;
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
-    RppiAxis rpp_flipaxis = (RppiAxis)data->flipAxis;
     rppi_flip_1C8U_pln((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, rpp_flipaxis, (void *)handle);
     return VX_SUCCESS;
 
@@ -97,7 +97,7 @@ static vx_status VX_CALLBACK processFlip(vx_node node, const vx_reference * para
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
     vx_df_image df_image = VX_DF_IMAGE_VIRT;
-    std::cout<<"\n Not supported";
+    rppi_flip_1C8U_pln_host((void *)data->pSrc, data->dimensions, (void*)data->pDst, rpp_flipaxis);
     return VX_SUCCESS;
 #endif
 }
@@ -115,11 +115,10 @@ static vx_status VX_CALLBACK initializeFlip(vx_node node, const vx_reference *pa
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_WIDTH, &data->dimensions.width, sizeof(data->dimensions.width)));
 
     STATUS_ERROR_CHECK(vxCopyScalar((vx_scalar)parameters[2], &data->flipAxis, VX_READ_ONLY, VX_MEMORY_TYPE_HOST));
-    std::cerr<<"\nFlip Init:"<< data->flipAxis;
 #if ENABLE_OPENCL
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
 #else
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, data->pSrc, sizeof(data->pSrc)));
+    //STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, data->pSrc, sizeof(data->pSrc)));
 #endif
 
     STATUS_ERROR_CHECK(vxSetNodeAttribute(node, VX_NODE_LOCAL_DATA_PTR, &data, sizeof(data)));
