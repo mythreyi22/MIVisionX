@@ -65,6 +65,7 @@ struct RPPCommonHandle {
 #if ENABLE_OPENCL
     cl_command_queue cmdq;
 #endif
+    void* cpuHandle = NULL;
     int count;
     bool exhaustiveSearch;
 };

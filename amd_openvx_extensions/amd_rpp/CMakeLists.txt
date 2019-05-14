@@ -24,12 +24,8 @@ project (rpp)
 set (CMAKE_CXX_STANDARD 11)
 cmake_policy(SET CMP0054 NEW)
 
-#find_package(RPP      REQUIRED)
-find_package(OpenCL     REQUIRED)
+find_package(OpenCL     QUIET)
 
-list(APPEND PACKAGE_DEPENDS PACKAGE OpenCL)
-
-include_directories(${OpenCL_INCLUDE_DIRS})
 include_directories (include)
 include_directories (../../amd_openvx/openvx/include/)
 include_directories (/opt/rocm/rpp/include/)
@@ -43,8 +39,21 @@ list (APPEND SOURCES
 	)
 
 link_directories(/opt/rocm/rpp/lib/)
-add_library(vx_rpp SHARED ${SOURCES})
-TARGET_LINK_LIBRARIES(vx_rpp amd_rpp)
+
+if (OpenCL_FOUND)
+	message( "BUILDING WITH OPENCL BACKEND")
+	set(ENABLE_OPENCL 1)
+	add_definitions( -DENABLE_OPENCL=${ENABLE_OPENCL} )
+	include_directories(${OpenCL_INCLUDE_DIRS} ${OpenCL_INCLUDE_DIRS}/Headers)
+	add_library(vx_rpp SHARED ${SOURCES})
+	target_link_libraries(vx_rpp amd_rpp ${OpenCL_LIBRARIES})
+else(OpenCL_FOUND)
+	message( "OPENCL NOT FOUND")
+	set(ENABLE_OPENCL 0)
+	add_definitions( -DENABLE_OPENCL=${ENABLE_OPENCL} )
+	add_library(vx_rpp SHARED ${SOURCES})
+	target_link_libraries(vx_rpp amd_rpp)
+endif(OpenCL_FOUND)
 
 install (TARGETS vx_rpp DESTINATION lib)
 install (FILES include/vx_ext_rpp.h include/kernels_rpp.h DESTINATION include)

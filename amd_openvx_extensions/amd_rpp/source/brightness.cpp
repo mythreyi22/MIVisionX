@@ -34,14 +34,12 @@ THE SOFTWARE.
 
 struct BrightnessLocalData {
 
-#if ENABLE_OPENCL
     RPPCommonHandle handle;
-#endif
     RppiSize dimensions;
     RppPtr_t pSrc;
     RppPtr_t pDst;
     Rpp32f alpha;
-    Rpp32u beta;
+    Rpp32s beta;
 
 #if ENABLE_OPENCL
     cl_mem cl_pSrc;
@@ -105,9 +103,10 @@ static vx_status VX_CALLBACK processBrightness(vx_node node, const vx_reference 
     vx_df_image df_image = VX_DF_IMAGE_VIRT;
 
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
-		if (df_image == VX_DF_IMAGE_U8 ){
+        if (df_image == VX_DF_IMAGE_U8 ){
             std::cout<<"\n 1 channel";
-            rppi_brighten_1C8U_pln_host(data->pSrc, data->dimensions, data->pDst,  data->alpha, data->beta);
+            rppi_brighten_1C8U_pln_host(data->pSrc, data->dimensions, data->pDst,  data->alpha, data->beta,data->handle.cpuHandle);
+
         }
         else if(df_image == VX_DF_IMAGE_RGB) {
             std::cout<<"\n 3 channel";
