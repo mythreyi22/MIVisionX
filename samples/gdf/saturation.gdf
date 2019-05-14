@@ -1,0 +1,16 @@
+import vx_rpp
+
+# create input and output images
+data input  = image:480,360,RGB2
+data output = image:480,360,RGB2
+
+# specify input source for input image and request for displaying input and output images
+read input  ../images/bird.jpeg
+
+#read input face1.jpg
+view input  inputWindow
+view output outputWindow
+
+# compute edges in luma image using Canny edge detector
+data alpha = scalar:FLOAT32,20
+node org.rpp.Saturation input output alpha

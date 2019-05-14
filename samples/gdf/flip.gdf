@@ -1,0 +1,15 @@
+import vx_rpp
+
+# create input and output images
+data input  = image:480,360,U008
+data output = image:480,360,U008
+
+# specify input source for input image and request for displaying input and output images
+read input  ../images/apple.jpeg
+view input  inputWindow
+view output outputWindow
+
+
+# compute edges in luma image using Canny edge detector
+data axis = scalar:INT32,2
+node org.rpp.Flip input output axis
