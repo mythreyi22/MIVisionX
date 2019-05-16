@@ -88,21 +88,25 @@ static vx_status VX_CALLBACK processBrightness(vx_node node, const vx_reference 
 {
     BrightnessLocalData * data = NULL;
     STATUS_ERROR_CHECK(vxQueryNode(node, VX_NODE_LOCAL_DATA_PTR, &data, sizeof(data)));
-
+    vx_df_image df_image = VX_DF_IMAGE_VIRT;
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
 #if ENABLE_OPENCL
 
     cl_command_queue handle = data->handle.cmdq;
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
-    rppi_brighten_1C8U_pln((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->alpha, data->beta, (void *)handle);
+    if (df_image == VX_DF_IMAGE_U8 ){
+        std::cout<<"\n 1 channel";
+        rppi_brighten_1C8U_pln((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->alpha, data->beta, (void *)handle);
+    }
+    else if(df_image == VX_DF_IMAGE_RGB) {
+        rppi_brighten_3C8U_pln(data->pSrc, data->dimensions, data->pDst,  data->alpha, data->beta);
+    }
     return VX_SUCCESS;
 
 #else
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
-    vx_df_image df_image = VX_DF_IMAGE_VIRT;
-
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
         if (df_image == VX_DF_IMAGE_U8 ){
             std::cout<<"\n 1 channel";
             rppi_brighten_1C8U_pln_host(data->pSrc, data->dimensions, data->pDst,  data->alpha, data->beta,data->handle.cpuHandle);
