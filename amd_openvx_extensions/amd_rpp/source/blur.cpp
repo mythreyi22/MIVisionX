@@ -94,10 +94,10 @@ static vx_status VX_CALLBACK processBlur(vx_node node, const vx_reference * para
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
     if (df_image == VX_DF_IMAGE_U8 ){
         std::cout<<"\n 1 channel";
-        rppi_blur3x3_1C8U_pln((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, (void *)handle);
+        rppi_blur3x3_u8_pln1_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, (void *)handle);
     }
     else if(df_image == VX_DF_IMAGE_RGB) {
-        rppi_blur3x3_3C8U_pkd((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, (void *)handle);
+        rppi_blur3x3_u8_pkd3_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, (void *)handle);
     }
     return VX_SUCCESS;
 
@@ -106,10 +106,11 @@ static vx_status VX_CALLBACK processBlur(vx_node node, const vx_reference * para
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
 	if (df_image == VX_DF_IMAGE_U8 ){
             std::cout<<"\n 1 channel";
-            rppi_blur3x3_1C8U_pln_host(data->pSrc, data->dimensions, data->pDst);
+            rppi_blur3x3_u8_pln1_host(data->pSrc, data->dimensions, data->pDst);
         }
         else if(df_image == VX_DF_IMAGE_RGB) {
             std::cout<<"\n Not supported.";
+            rppi_blur3x3_u8_pkd3_host(data->pSrc, data->dimensions, data->pDst);
         }
     return VX_SUCCESS;
 #endif

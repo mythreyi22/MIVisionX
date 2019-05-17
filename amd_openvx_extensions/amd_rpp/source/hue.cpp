@@ -100,7 +100,7 @@ static vx_status VX_CALLBACK processHue(vx_node node, const vx_reference * param
 #else
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
-    rppi_hue_3C8U_pln_host((void*)data->pSrc, data->dimensions ,(void*)data->pDst, data->hueShift);
+    rppi_hue_u8_pln3_host((void*)data->pSrc, data->dimensions ,(void*)data->pDst, data->hueShift);
     return VX_SUCCESS;
 #endif
 }
