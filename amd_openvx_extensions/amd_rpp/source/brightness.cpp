@@ -100,7 +100,7 @@ static vx_status VX_CALLBACK processBrightness(vx_node node, const vx_reference 
         rppi_brightness_u8_pln1_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->alpha, data->beta, (void *)handle);
     }
     else if(df_image == VX_DF_IMAGE_RGB) {
-        rppi_brightness_u8_pkd3_gpu(data->pSrc, data->dimensions, data->pDst,  data->alpha, data->beta);
+        rppi_brightness_u8_pkd3_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->alpha, data->beta, (void *)handle);
     }
     return VX_SUCCESS;
 
