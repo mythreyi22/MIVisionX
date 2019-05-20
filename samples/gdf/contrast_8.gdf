@@ -5,11 +5,11 @@ data input  = image:480,360,U008
 data output = image:480,360,U008
 
 # specify input source for input image and request for displaying input and output images
-read input ../images/apple.jpeg
+read input  ../images/lady.png
 view input  inputWindow
-view output outputWindow
+view output contrast_8
 
-# Brighten image in luma image using Brightness kernel
-data alpha = scalar:FLOAT32,1
-data beta = scalar:INT32,30
-node org.rpp.Brightness input output alpha beta
+# compute contrast for image by calling contrast kernel
+data min = scalar:UINT32,0
+data max = scalar:UINT32,255
+node org.rpp.Contrast input output min max

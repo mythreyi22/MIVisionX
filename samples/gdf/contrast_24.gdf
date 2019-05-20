@@ -1,0 +1,15 @@
+import vx_rpp
+
+# create input and output images
+data input  = image:320,320,RGB2
+data output = image:320,320,RGB2
+
+# specify input source for input image and request for displaying input and output images
+read input  ../images/castle_320x320.jpg
+view input  inputWindow
+view output contrast_24
+
+# compute contrast for image by calling contrast kernel
+data min = scalar:UINT32,50
+data max = scalar:UINT32,255
+node org.rpp.Contrast input output min max

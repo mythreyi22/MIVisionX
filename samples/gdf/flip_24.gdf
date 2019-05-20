@@ -1,0 +1,17 @@
+import vx_rpp
+
+# create input and output images
+data input  = image:320,320,RGB2
+data output = image:320,320,RGB2
+
+# specify input source for input image and request for displaying input and output images
+read input  ../images/castle_320x320.jpg
+view input  inputWindow
+view output flip_24
+
+# flip the image by calling flip kernel
+# 0 -- Horizontal axis flip
+# 1 -- vertical axis flip
+# 2 -- both axis flip
+data axis = scalar:INT32,1
+node org.rpp.Flip input output axis

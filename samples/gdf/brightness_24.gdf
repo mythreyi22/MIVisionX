@@ -1,0 +1,15 @@
+import vx_rpp
+
+# create input and output images
+data input  = image:320,320,RGB2
+data output = image:320,320,RGB2
+
+# specify input source for input image and request for displaying input and output images
+read input ../images/castle_320x320.jpg
+view input  inputWindow
+view output brightness_24
+
+# Brighten image in luma image using Brightness kernel
+data alpha = scalar:FLOAT32,1
+data beta = scalar:INT32,30
+node org.rpp.Brightness input output alpha beta

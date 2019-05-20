@@ -1,0 +1,21 @@
+import vx_rpp
+
+# create input and output images
+data input  = image:320,320,RGB2
+data output = image:320,320,RGB2
+data output1 = image:320,320,RGB2
+data output2 = image:320,320,RGB2
+data output3 = image:320,320,RGB2
+data output4 = image:320,320,RGB2
+
+# specify input source for input image and request for displaying input and output images
+read input ../images/castle_320x320.jpg
+view input  inputWindow
+view output blur_24
+
+# Blur the image using blur kernel
+node org.rpp.Blur input output
+node org.rpp.Blur output output1
+node org.rpp.Blur output1 output2
+node org.rpp.Blur output2 output3
+node org.rpp.Blur output3 output4

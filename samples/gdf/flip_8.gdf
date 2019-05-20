@@ -5,11 +5,14 @@ data input  = image:480,360,U008
 data output = image:480,360,U008
 
 # specify input source for input image and request for displaying input and output images
-read input  ../images/apple.jpeg
+read input  ../images/lady.png
 view input  inputWindow
-view output outputWindow
+view output flip_8
 
 
-# compute edges in luma image using Canny edge detector
-data axis = scalar:INT32,2
+# flip the image by calling flip kernel
+# 0 -- Horizontal axis flip
+# 1 -- Vertical axis flip
+# 2 -- Both axis flip
+data axis = scalar:INT32,1
 node org.rpp.Flip input output axis

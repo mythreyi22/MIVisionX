@@ -2,21 +2,18 @@ import vx_rpp
 
 # create input and output images
 data input  = image:480,320,U008
-data input1  = image:480,320,U008
+data output = image:480,320,U008
+data output1 = image:480,320,U008
 data output2 = image:480,320,U008
 data output4 = image:480,320,U008
 data output3 = image:480,320,U008
 
-data output = image:480,320,U008
-data output1 = image:480,320,U008
-
 # specify input source for input image and request for displaying input and output images
 read input  ../images/lady.png
 view input  inputWindow
-view output4 outputWindow
+view output4 blur_8
 
-
-# compute edges in luma image using Canny edge detector
+#Blur image using blur kernel 
 node org.rpp.Blur input output
 node org.rpp.Blur output output1
 node org.rpp.Blur output1 output2
