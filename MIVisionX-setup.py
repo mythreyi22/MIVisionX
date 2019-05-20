@@ -1,10 +1,10 @@
 __author__      = "Kiriti Nagesh Gowda"
 __copyright__   = "Copyright 2018, AMD Radeon MIVisionX setup"
 __license__     = "MIT"
-__version__     = "0.9.93"
+__version__     = "1.0.1"
 __maintainer__  = "Kiriti Nagesh Gowda"
 __email__       = "Kiriti.NageshGowda@amd.com"
-__status__      = "beta"
+__status__      = "Shipping"
 
 import argparse
 import commands
@@ -14,7 +14,7 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument('--directory', type=str, default='',        help='Setup home directory - optional (default:~/)')
 parser.add_argument('--installer', type=str, default='apt-get', help='Linux system installer - optional (default:apt-get) [options: Ubuntu - apt-get; CentOS - yum]')
-parser.add_argument('--miopen',    type=str, default='1.7.1',   help='MIOpen Version - optional (default:1.7.1)')
+parser.add_argument('--miopen',    type=str, default='1.8.1',   help='MIOpen Version - optional (default:1.8.1)')
 args = parser.parse_args()
 
 setupDir = args.directory
@@ -29,9 +29,9 @@ if sudoLocation != '/usr/bin/sudo':
 	status, userName = commands.getstatusoutput("whoami")
 
 if setupDir == '':
-	setupDir_deps = '~/deps'
+	setupDir_deps = '~/mivisionx-deps'
 else:
-	setupDir_deps = setupDir+'/deps'
+	setupDir_deps = setupDir+'/mivisionx-deps'
 
 # setup for CentOS or Ubuntu
 linuxSystemInstall_check = '--nogpgcheck'
@@ -62,8 +62,8 @@ else:
 	print("\nMIVisionX Dependencies Installation\n")
 	os.system('sudo -v')
 	os.system('sudo '+linuxFlag+' '+linuxSystemInstall+' -y '+linuxSystemInstall_check+' install cmake git wget unzip')
-	os.system('(cd '+setupDir+'; mkdir deps)')
-	os.system('(cd '+setupDir+'; mkdir deps)')
+	os.system('(cd '+setupDir+'; mkdir mivisionx-deps)')
+	os.system('(cd '+setupDir+'; mkdir mivisionx-deps)')
 	os.system('(cd '+deps_dir+'; git clone https://github.com/RadeonOpenCompute/rocm-cmake.git )')
 	os.system('(cd '+deps_dir+'; git clone https://github.com/ROCmSoftwarePlatform/MIOpenGEMM.git )')
 	os.system('(cd '+deps_dir+'; wget https://github.com/ROCmSoftwarePlatform/MIOpen/archive/'+MIOpenVersion+'.zip )')
