@@ -109,7 +109,6 @@ static vx_status VX_CALLBACK processBlur(vx_node node, const vx_reference * para
             rppi_blur3x3_u8_pln1_host(data->pSrc, data->dimensions, data->pDst);
         }
         else if(df_image == VX_DF_IMAGE_RGB) {
-            std::cout<<"\n Not supported.";
             rppi_blur3x3_u8_pkd3_host(data->pSrc, data->dimensions, data->pDst);
         }
     return VX_SUCCESS;

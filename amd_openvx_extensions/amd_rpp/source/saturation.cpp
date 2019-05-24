@@ -99,7 +99,7 @@ static vx_status VX_CALLBACK processSaturation(vx_node node, const vx_reference 
 #else
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
-    rppi_saturation_u8_pln3_host((void*)data->pSrc, data->dimensions ,(void*)data->pDst, data->saturationFactor);
+    rppi_saturationRGB_u8_pkd3_host((void*)data->pSrc, data->dimensions ,(void*)data->pDst, data->saturationFactor);
     return VX_SUCCESS;
 #endif
 }
