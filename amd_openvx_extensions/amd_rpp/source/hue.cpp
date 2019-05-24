@@ -94,7 +94,7 @@ static vx_status VX_CALLBACK processHue(vx_node node, const vx_reference * param
     cl_command_queue handle = data->handle.cmdq;
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
-    std::cout<<"\n Not supported";
+    rppi_hueRGB_u8_pkd3_gpu ((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, data->hueShift, (void *)handle);
     return VX_SUCCESS;
 
 #else
