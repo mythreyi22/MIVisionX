@@ -43,6 +43,7 @@ list (APPEND SOURCES
 	source/bitwiseNOT.cpp
 	source/bitwise_exclusive_OR.cpp
 	source/bitwise_inclusive_OR.cpp
+	source/add.cpp
 	)
 
 link_directories(/opt/rocm/rpp/lib/)

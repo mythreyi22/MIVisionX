@@ -56,6 +56,7 @@ vx_status get_kernels_to_publish()
 	STATUS_ERROR_CHECK(ADD_KERENEL(BitwiseNOT_Register));
 	STATUS_ERROR_CHECK(ADD_KERENEL(ExclusiveOR_Register));
 	STATUS_ERROR_CHECK(ADD_KERENEL(InclusiveOR_Register));
+	STATUS_ERROR_CHECK(ADD_KERENEL(Add_Register));
 	return status;
 }
 
