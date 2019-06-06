@@ -33,7 +33,7 @@ THE SOFTWARE.
 #include </opt/rocm/rpp/include/rppdefs.h>
 #include </opt/rocm/rpp/include/rppi_image_augumentation_functions.h>
 
-struct BitwiseANDLocalData {
+struct ExclusiveORLocalData {
 
 #if ENABLE_OPENCL
     RPPCommonHandle handle;
@@ -57,7 +57,7 @@ struct BitwiseANDLocalData {
 
 };
 
-static vx_status VX_CALLBACK validateBitwiseAND(vx_node node, const vx_reference parameters[], vx_uint32 num, vx_meta_format metas[])
+static vx_status VX_CALLBACK validateExclusiveOR(vx_node node, const vx_reference parameters[], vx_uint32 num, vx_meta_format metas[])
 {
  // check scalar alpha and beta type
     vx_status status = VX_SUCCESS;
@@ -79,9 +79,9 @@ static vx_status VX_CALLBACK validateBitwiseAND(vx_node node, const vx_reference
     return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK processBitwiseAND(vx_node node, const vx_reference * parameters, vx_uint32 num)
+static vx_status VX_CALLBACK processExclusiveOR(vx_node node, const vx_reference * parameters, vx_uint32 num)
 {
-    BitwiseANDLocalData * data = NULL;
+    ExclusiveORLocalData * data = NULL;
     STATUS_ERROR_CHECK(vxQueryNode(node, VX_NODE_LOCAL_DATA_PTR, &data, sizeof(data)));
     vx_df_image df_image = VX_DF_IMAGE_VIRT;
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
@@ -110,9 +110,9 @@ static vx_status VX_CALLBACK processBitwiseAND(vx_node node, const vx_reference 
   return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK initializeBitwiseAND(vx_node node, const vx_reference *parameters, vx_uint32 num)
+static vx_status VX_CALLBACK initializeExclusiveOR(vx_node node, const vx_reference *parameters, vx_uint32 num)
 {
-    BitwiseANDLocalData * data = new BitwiseANDLocalData;
+    ExclusiveORLocalData * data = new ExclusiveORLocalData;
     memset(data, 0, sizeof(*data));
 
 #if ENABLE_OPENCL
@@ -134,22 +134,22 @@ static vx_status VX_CALLBACK initializeBitwiseAND(vx_node node, const vx_referen
     return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK uninitializeBitwiseAND(vx_node node, const vx_reference *parameters, vx_uint32 num)
+static vx_status VX_CALLBACK uninitializeExclusiveOR(vx_node node, const vx_reference *parameters, vx_uint32 num)
 {
     return VX_SUCCESS;
 }
 
-vx_status BitwiseAND_Register(vx_context context)
+vx_status ExclusiveOR_Register(vx_context context)
 {
     vx_status status = VX_SUCCESS;
 // add kernel to the context with callbacks
-    vx_kernel kernel = vxAddUserKernel(context, "org.rpp.BitwiseAND",
-            VX_KERNEL_BITWISEAND,
-            processBitwiseAND,
+    vx_kernel kernel = vxAddUserKernel(context, "org.rpp.ExclusiveOR",
+            VX_KERNEL_EXCLUSIVEOR,
+            processExclusiveOR,
             3,
-            validateBitwiseAND,
-            initializeBitwiseAND,
-            uninitializeBitwiseAND);
+            validateExclusiveOR,
+            initializeExclusiveOR,
+            uninitializeExclusiveOR);
 
     ERROR_CHECK_OBJECT(kernel);
     #if ENABLE_OPENCL

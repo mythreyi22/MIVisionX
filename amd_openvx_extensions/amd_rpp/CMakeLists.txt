@@ -41,6 +41,7 @@ list (APPEND SOURCES
 	source/internal_publishKernels.cpp
 	source/bitwiseAND.cpp
 	source/bitwiseNOT.cpp
+	source/bitwise_exclusive_OR.cpp
 	)
 
 link_directories(/opt/rocm/rpp/lib/)

@@ -62,6 +62,7 @@ enum vx_kernel_ext_amd_rpp_e
     VX_KERNEL_SATURATION  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x006,
     VX_KERNEL_BITWISEAND  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x007,
     VX_KERNEL_BITWISENOT  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x008,
+    VX_KERNEL_EXCLUSIVEOR  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x009,
 };
 
 //////////////////////////////////////////////////////////////////////
