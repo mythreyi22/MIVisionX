@@ -39,6 +39,7 @@ vx_status Saturation_Register(vx_context);
 vx_status BitwiseAND_Register(vx_context);
 vx_status BitwiseNOT_Register(vx_context);
 vx_status ExclusiveOR_Register(vx_context);
+vx_status InclusiveOR_Register(vx_context);
 
 #define VX_KERNEL_RPP_BRIGHTNESS_NAME           "org.rpp.Brightness"
 #define VX_KERNEL_RPP_CONTRAST_NAME             "org.rpp.Contrast"
@@ -49,5 +50,6 @@ vx_status ExclusiveOR_Register(vx_context);
 #define VX_KERNEL_RPP_BITWISEAND_NAME           "org.rpp.BitwiseAND"
 #define VX_KERNEL_RPP_BITWISENOT_NAME           "org.rpp.BitwiseNOT"
 #define VX_KERNEL_RPP_EXCLUSIVEOR_NAME           "org.rpp.ExclusiveOR"
+#define VX_KERNEL_RPP_INCLUSIVEOR_NAME           "org.rpp.InclusiveOR"
 
 #endif //_AMDVX_EXT__PUBLISH_KERNELS_H_

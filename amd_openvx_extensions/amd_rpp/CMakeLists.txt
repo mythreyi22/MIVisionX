@@ -42,6 +42,7 @@ list (APPEND SOURCES
 	source/bitwiseAND.cpp
 	source/bitwiseNOT.cpp
 	source/bitwise_exclusive_OR.cpp
+	source/bitwise_inclusive_OR.cpp
 	)
 
 link_directories(/opt/rocm/rpp/lib/)
