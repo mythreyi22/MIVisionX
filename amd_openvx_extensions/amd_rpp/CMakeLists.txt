@@ -45,6 +45,7 @@ list (APPEND SOURCES
 	source/bitwise_inclusive_OR.cpp
 	source/add.cpp
 	source/subtract.cpp
+	source/absolute_difference.cpp
 	)
 
 link_directories(/opt/rocm/rpp/lib/)

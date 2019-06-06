@@ -58,6 +58,7 @@ vx_status get_kernels_to_publish()
 	STATUS_ERROR_CHECK(ADD_KERENEL(InclusiveOR_Register));
 	STATUS_ERROR_CHECK(ADD_KERENEL(Add_Register));
 	STATUS_ERROR_CHECK(ADD_KERENEL(Subtract_Register));
+	STATUS_ERROR_CHECK(ADD_KERENEL(AbsoluteDifference_Register));
 	return status;
 }
 
