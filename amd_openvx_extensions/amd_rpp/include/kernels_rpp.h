@@ -65,6 +65,7 @@ enum vx_kernel_ext_amd_rpp_e
     VX_KERNEL_EXCLUSIVEOR  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x009,
     VX_KERNEL_INCLUSIVEOR  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x010,
     VX_KERNEL_RPP_ADD  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x011,
+    VX_KERNEL_RPP_SUBTRACT  = VX_KERNEL_BASE(VX_ID_MCW, VX_LIBRARY_RPP) + 0x012,
 };
 
 //////////////////////////////////////////////////////////////////////
