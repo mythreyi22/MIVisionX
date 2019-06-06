@@ -39,6 +39,8 @@ list (APPEND SOURCES
 	source/saturation.cpp
 	source/kernel_rpp.cpp
 	source/internal_publishKernels.cpp
+	source/bitwiseAND.cpp
+	source/bitwiseNOT.cpp
 	)
 
 link_directories(/opt/rocm/rpp/lib/)
