@@ -117,15 +117,15 @@ VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_BitwiseNOT(vx_graph graph, vx_imag
 }
 
 // Creating node for BitwiseAND
-VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_BitwiseAND(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2)
+VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_BitwiseAND(vx_graph graph, vx_image pSrc1, vx_image pSrc2 , vx_image pDst)
 {
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
     if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
         vx_reference params[] = {
             (vx_reference) pSrc1,
+            (vx_reference) pSrc2 ,
             (vx_reference) pDst,
-            (vx_reference) pSrc2,
         };
             node = createNode(graph, VX_KERNEL_SATURATION, params, 3);
     }

@@ -42,7 +42,7 @@ extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_blur(vx_graph graph, v
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Flip(vx_graph graph, vx_image pSrc, vx_image pDst, vx_int32 flipAxis);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Hue(vx_graph graph, vx_image pSrc, vx_image pDst, vx_float32 hueShift);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Saturation(vx_graph graph, vx_image pSrc, vx_image pDst, vx_float32 saturationFactor);
-extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_BitwiseAND(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2);
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_BitwiseAND(vx_graph graph, vx_image pSrc1, vx_image pSrc2 , vx_image pDst );
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_BitwiseNOT(vx_graph graph, vx_image pSrc, vx_image pDst);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_ExclusiveOR(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_InclusiveOR(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2);
