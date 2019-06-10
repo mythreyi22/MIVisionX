@@ -111,13 +111,13 @@ VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_BitwiseNOT(vx_graph graph, vx_imag
             (vx_reference) pSrc,
             (vx_reference) pDst,
         };
-            node = createNode(graph, VX_KERNEL_SATURATION, params, 2);
+            node = createNode(graph, VX_KERNEL_BITWISENOT, params, 2);
     }
     return node;
 }
 
 // Creating node for BitwiseAND
-VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_BitwiseAND(vx_graph graph, vx_image pSrc1, vx_image pSrc2 , vx_image pDst)
+VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_BitwiseAND(vx_graph graph, vx_image pSrc1, vx_image pSrc2 ,vx_image pDst)
 {
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
@@ -127,82 +127,82 @@ VX_API_ENTRY vx_node VX_API_CALL vxExtrppNode_BitwiseAND(vx_graph graph, vx_imag
             (vx_reference) pSrc2 ,
             (vx_reference) pDst,
         };
-            node = createNode(graph, VX_KERNEL_SATURATION, params, 3);
+            node = createNode(graph, VX_KERNEL_BITWISEAND, params, 3);
     }
     return node;
 }
 
 // Creating node for ExclusiveOR
-extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_ExclusiveOR(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2){
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_ExclusiveOR(vx_graph graph, vx_image pSrc1, vx_image pSrc2, vx_image pDst){
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
     if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
         vx_reference params[] = {
             (vx_reference) pSrc1,
-            (vx_reference) pDst,
             (vx_reference) pSrc2,
+            (vx_reference) pDst,
         };
-            node = createNode(graph, VX_KERNEL_SATURATION, params, 3);
+            node = createNode(graph, VX_KERNEL_EXCLUSIVEOR, params, 3);
     }
     return node;
 }
 
 // Creating node for InclusiveOR
-extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_InclusiveOR(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2){
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_InclusiveOR(vx_graph graph, vx_image pSrc1, vx_image pSrc2, vx_image pDst){
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
     if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
         vx_reference params[] = {
             (vx_reference) pSrc1,
-            (vx_reference) pDst,
             (vx_reference) pSrc2,
+            (vx_reference) pDst,
         };
-            node = createNode(graph, VX_KERNEL_SATURATION, params, 3);
+            node = createNode(graph, VX_KERNEL_INCLUSIVEOR, params, 3);
     }
     return node;
 }
 
 // Creating node for Add
-extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Add(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2){
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Add(vx_graph graph, vx_image pSrc1, vx_image pSrc2, vx_image pDst){
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
     if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
         vx_reference params[] = {
             (vx_reference) pSrc1,
-            (vx_reference) pDst,
             (vx_reference) pSrc2,
+            (vx_reference) pDst,
         };
-            node = createNode(graph, VX_KERNEL_SATURATION, params, 3);
+            node = createNode(graph, VX_KERNEL_RPP_ADD, params, 3);
     }
     return node;
 }
 
 // Creating node for Subtract
-extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Subtract(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2){
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Subtract(vx_graph graph, vx_image pSrc1, vx_image pSrc2, vx_image pDst){
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
     if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
         vx_reference params[] = {
             (vx_reference) pSrc1,
-            (vx_reference) pDst,
             (vx_reference) pSrc2,
+            (vx_reference) pDst,
         };
-            node = createNode(graph, VX_KERNEL_SATURATION, params, 3);
+            node = createNode(graph, VX_KERNEL_RPP_SUBTRACT, params, 3);
     }
     return node;
 }
 
 // Creating node for AbsoluteDifference
-extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_AbsoluteDifference(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2){
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_AbsoluteDifference(vx_graph graph, vx_image pSrc1, vx_image pSrc2, vx_image pDst){
     vx_node node = NULL;
     vx_context context = vxGetContext((vx_reference)graph);
     if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
         vx_reference params[] = {
             (vx_reference) pSrc1,
-            (vx_reference) pDst,
             (vx_reference) pSrc2,
+            (vx_reference) pDst,
         };
-            node = createNode(graph, VX_KERNEL_SATURATION, params, 3);
+            node = createNode(graph, VX_KERNEL_ABSOLUTEDIFFERENCE, params, 3);
     }
     return node;
 }
