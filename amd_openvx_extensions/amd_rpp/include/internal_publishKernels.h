@@ -43,6 +43,7 @@ vx_status InclusiveOR_Register(vx_context);
 vx_status Add_Register(vx_context);
 vx_status Subtract_Register(vx_context);
 vx_status AbsoluteDifference_Register(vx_context);
+vx_status BilateralFilter_Register(vx_context);
 
 #define VX_KERNEL_RPP_BRIGHTNESS_NAME           "org.rpp.Brightness"
 #define VX_KERNEL_RPP_CONTRAST_NAME             "org.rpp.Contrast"
@@ -55,6 +56,7 @@ vx_status AbsoluteDifference_Register(vx_context);
 #define VX_KERNEL_RPP_EXCLUSIVEOR_NAME          "org.rpp.ExclusiveOR"
 #define VX_KERNEL_RPP_ADD_NAME                  "org.rpp.Add"
 #define VX_KERNEL_RPP_SUBTRACT_NAME             "org.rpp.Subtract"
-#define VX_KERNEL_ABSOLUTEDIFFERENCE_NAME       "org.rpp.AbsoluteDifference"
+#define VX_KERNEL_RPP_ABSOLUTEDIFFERENCE_NAME   "org.rpp.AbsoluteDifference"
+#define VX_KERNEL_RPP_BILATERAL_FILTER_NAME     "org.rpp.BilateralFilter"
 
 #endif //_AMDVX_EXT__PUBLISH_KERNELS_H_

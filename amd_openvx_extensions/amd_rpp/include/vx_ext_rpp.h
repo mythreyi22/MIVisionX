@@ -49,6 +49,8 @@ extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_InclusiveOR(vx_graph g
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Add(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Subtract(vx_graph graph, vx_image pSrc1, vx_image pDst, vx_image pSrc2);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_AbsoluteDifference(vx_graph graph, vx_image pSrc1, vx_image pSrc2, vx_image pDst);
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_BilateralFilter(vx_graph graph, vx_image pSrc1, vx_image pDst,
+                                                                          vx_int32 filterSize, vx_float64 sigmaI, vx_float64 sigmaS);
 
 
 #endif

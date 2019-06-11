@@ -46,6 +46,7 @@ list (APPEND SOURCES
 	source/add.cpp
 	source/subtract.cpp
 	source/absolute_difference.cpp
+	source/bilateral_filter.cpp
 	)
 
 link_directories(/opt/rocm/rpp/lib/)
