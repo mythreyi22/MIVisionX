@@ -258,6 +258,22 @@ extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_AccumulateWeighted(vx_
     return node;
 }
 
+// Creating node for Gamma Correction
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_GammaCorrection(vx_graph graph, vx_image pSrc1, vx_image pSrc2, vx_float32 gamma) {
+    vx_node node = NULL;
+    vx_context context = vxGetContext((vx_reference)graph);
+    vx_scalar GAMMA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT32, &gamma);
+    if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
+        vx_reference params[] = {
+            (vx_reference) pSrc1,
+            (vx_reference) pSrc2,
+            (vx_reference) GAMMA,
+        };
+            node = createNode(graph, VX_KERNEL_RPP_GAMMACORRECTION, params, 3);
+    }
+    return node;
+}
+
 // utility functions
 vx_node createNode(vx_graph graph, vx_enum kernelEnum, vx_reference params[], vx_uint32 num)
 {

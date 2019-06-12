@@ -104,16 +104,14 @@ static vx_status VX_CALLBACK processAbsoluteDifference(vx_node node, const vx_re
 
 #else
 
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc1, sizeof(data->pSrc1)));
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc2, sizeof(data->pSrc2)));
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[2], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(data->pDst)));
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc1, sizeof(vx_uint8)));
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc2, sizeof(vx_uint8)));
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[2], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
     if (df_image == VX_DF_IMAGE_U8 ){
-        rppi_absolute_difference_u8_pln1_host((void *)data->pSrc1, (void *)data->pSrc2,
-                                       data->dimensions, (void*)data->pDst);
+        rppi_absolute_difference_u8_pln1_host((void *)data->pSrc1, (void *)data->pSrc2,data->dimensions, (void*)data->pDst);
     }
     else if(df_image == VX_DF_IMAGE_RGB) {
-        rppi_absolute_difference_u8_pkd3_host((void *)data->pSrc1, (void *)data->pSrc2,
-                                       data->dimensions, (void*)data->pDst);
+        rppi_absolute_difference_u8_pkd3_host((void *)data->pSrc1, (void *)data->pSrc2,data->dimensions, (void*)data->pDst);
     }
     return VX_SUCCESS;
 

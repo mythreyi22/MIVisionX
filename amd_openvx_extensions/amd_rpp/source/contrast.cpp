@@ -112,11 +112,9 @@ static vx_status VX_CALLBACK processcontrast(vx_node node, const vx_reference * 
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
     if (df_image == VX_DF_IMAGE_U8 ){
-        std::cout<<"\n 1 channel";
          rppi_contrast_u8_pln1_host(data->pSrc, data->dimensions ,data->pDst, data->min, data->max);
     }
     else if(df_image == VX_DF_IMAGE_RGB) {
-        std::cout<<"\n 3 channel";
         rppi_contrast_u8_pkd3_host(data->pSrc, data->dimensions ,data->pDst, data->min, data->max);
     }
     return VX_SUCCESS;

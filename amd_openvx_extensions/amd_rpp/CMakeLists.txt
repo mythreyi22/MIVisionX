@@ -49,6 +49,7 @@ list (APPEND SOURCES
 	source/bilateral_filter.cpp
 	source/accumulate.cpp
 	source/accumulate_weighted.cpp
+	source/gamma_corrections.cpp
 	)
 
 link_directories(/opt/rocm/rpp/lib/)

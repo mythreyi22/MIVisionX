@@ -1,4 +1,3 @@
-
 /*
 Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
 
@@ -33,15 +32,13 @@ THE SOFTWARE.
 #include </opt/rocm/rpp/include/rppdefs.h>
 #include </opt/rocm/rpp/include/rppi_image_augumentation_functions.h>
 
-struct HueLocalData {
+struct GammaCorrectionLocalData {
 
-#if ENABLE_OPENCL
     RPPCommonHandle handle;
-#endif
     RppiSize dimensions;
-    void * pSrc;
-    void * pDst;
-    Rpp32f hueShift;
+    RppPtr_t pSrc;
+    RppPtr_t pDst;
+    Rpp32f gamma;
 
 #if ENABLE_OPENCL
     cl_mem cl_pSrc;
@@ -55,21 +52,21 @@ struct HueLocalData {
 
 };
 
-static vx_status VX_CALLBACK validateHue(vx_node node, const vx_reference parameters[], vx_uint32 num, vx_meta_format metas[])
+static vx_status VX_CALLBACK validateGammaCorrection(vx_node node, const vx_reference parameters[], vx_uint32 num, vx_meta_format metas[])
 {
- // check scalar max and min type
+ // check scalar gamma
     vx_status status = VX_SUCCESS;
     vx_enum type;
     vx_parameter param = vxGetParameterByIndex(node, 0);
 
     STATUS_ERROR_CHECK(vxQueryScalar((vx_scalar)parameters[2], VX_SCALAR_TYPE, &type, sizeof(type)));
-    if(type != VX_TYPE_FLOAT32 ) return ERRMSG(VX_ERROR_INVALID_TYPE, "validate: Paramter: #2 type=%d (must be size)\n", type);
+    if(type != VX_TYPE_FLOAT32) return ERRMSG(VX_ERROR_INVALID_TYPE, "validate: Paramter: #2 type=%d (must be size)\n", type);
 
     vx_image image;
     vx_df_image df_image = VX_DF_IMAGE_VIRT;
     STATUS_ERROR_CHECK(vxQueryParameter(param, VX_PARAMETER_ATTRIBUTE_REF, &image, sizeof(vx_image)));
     STATUS_ERROR_CHECK(vxQueryImage(image, VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
-		if (df_image != VX_DF_IMAGE_RGB)
+		if (df_image != VX_DF_IMAGE_U8 || df_image != VX_DF_IMAGE_RGB)
 			status = VX_ERROR_INVALID_VALUE;
     STATUS_ERROR_CHECK(vxSetMetaFormatAttribute(metas[1], VX_IMAGE_FORMAT, &df_image, sizeof(df_image)));
 
@@ -84,30 +81,42 @@ static vx_status VX_CALLBACK validateHue(vx_node node, const vx_reference parame
     return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK processHue(vx_node node, const vx_reference * parameters, vx_uint32 num)
+static vx_status VX_CALLBACK processGammaCorrection(vx_node node, const vx_reference * parameters, vx_uint32 num)
 {
-    HueLocalData * data = NULL;
+    GammaCorrectionLocalData * data = NULL;
     STATUS_ERROR_CHECK(vxQueryNode(node, VX_NODE_LOCAL_DATA_PTR, &data, sizeof(data)));
-
+    vx_df_image df_image = VX_DF_IMAGE_VIRT;
+    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
 #if ENABLE_OPENCL
 
     cl_command_queue handle = data->handle.cmdq;
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
-    rppi_hueRGB_u8_pkd3_gpu ((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, data->hueShift, (void *)handle);
+    if (df_image == VX_DF_IMAGE_U8 ){
+        rppi_gamma_correction_u8_pln1_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->gamma, (void *)handle);
+    }
+    else if(df_image == VX_DF_IMAGE_RGB) {
+        rppi_gamma_correction_u8_pkd3_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->gamma, (void *)handle);
+    }
     return VX_SUCCESS;
 
 #else
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
-    rppi_hueRGB_u8_pkd3_host((void*)data->pSrc, data->dimensions ,(void*)data->pDst, data->hueShift);
-    return VX_SUCCESS;
+    // STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
+    // STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
+    //     if (df_image == VX_DF_IMAGE_U8 ){
+    //         //rppi_brightness_u8_pln1_host(data->pSrc, data->dimensions, data->pDst,  data->gamma, data->beta,data->handle.cpuHandle);
+
+    //     }
+    //     else if(df_image == VX_DF_IMAGE_RGB) {
+    //         //rppi_brightness_u8_pkd3_host(data->pSrc, data->dimensions, data->pDst,  data->gamma, data->beta);
+    //     }
+    // return VX_SUCCESS;
 #endif
 }
 
-static vx_status VX_CALLBACK initializeHue(vx_node node, const vx_reference *parameters, vx_uint32 num)
+static vx_status VX_CALLBACK initializeGammaCorrection(vx_node node, const vx_reference *parameters, vx_uint32 num)
 {
-    HueLocalData * data = new HueLocalData;
+    GammaCorrectionLocalData * data = new GammaCorrectionLocalData;
     memset(data, 0, sizeof(*data));
 
 #if ENABLE_OPENCL
@@ -117,7 +126,7 @@ static vx_status VX_CALLBACK initializeHue(vx_node node, const vx_reference *par
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_HEIGHT, &data->dimensions.height, sizeof(data->dimensions.height)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_WIDTH, &data->dimensions.width, sizeof(data->dimensions.width)));
 
-    STATUS_ERROR_CHECK(vxCopyScalar((vx_scalar)parameters[2], &data->hueShift, VX_READ_ONLY, VX_MEMORY_TYPE_HOST));
+    STATUS_ERROR_CHECK(vxCopyScalar((vx_scalar)parameters[2], &data->gamma, VX_READ_ONLY, VX_MEMORY_TYPE_HOST));
 
 #if ENABLE_OPENCL
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
@@ -130,22 +139,22 @@ static vx_status VX_CALLBACK initializeHue(vx_node node, const vx_reference *par
     return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK uninitializeHue(vx_node node, const vx_reference *parameters, vx_uint32 num)
+static vx_status VX_CALLBACK uninitializeGammaCorrection(vx_node node, const vx_reference *parameters, vx_uint32 num)
 {
     return VX_SUCCESS;
 }
 
-vx_status Hue_Register(vx_context context)
+vx_status GammaCorrection_Register(vx_context context)
 {
 	vx_status status = VX_SUCCESS;
 // add kernel to the context with callbacks
-    vx_kernel kernel = vxAddUserKernel(context, "org.rpp.Hue",
-            VX_KERNEL_HUE,
-            processHue,
+    vx_kernel kernel = vxAddUserKernel(context, "org.rpp.GammaCorrection",
+            VX_KERNEL_RPP_GAMMACORRECTION,
+            processGammaCorrection,
             3,
-            validateHue,
-            initializeHue,
-            uninitializeHue);
+            validateGammaCorrection,
+            initializeGammaCorrection,
+            uninitializeGammaCorrection);
 
     ERROR_CHECK_OBJECT(kernel);
     #if ENABLE_OPENCL
@@ -160,7 +169,7 @@ vx_status Hue_Register(vx_context context)
 		PARAM_ERROR_CHECK(vxAddParameterToKernel(kernel, 0, VX_INPUT, VX_TYPE_IMAGE, VX_PARAMETER_STATE_REQUIRED));
 		PARAM_ERROR_CHECK(vxAddParameterToKernel(kernel, 1, VX_OUTPUT, VX_TYPE_IMAGE, VX_PARAMETER_STATE_REQUIRED));
 		PARAM_ERROR_CHECK(vxAddParameterToKernel(kernel, 2, VX_INPUT, VX_TYPE_SCALAR, VX_PARAMETER_STATE_REQUIRED));
-		PARAM_ERROR_CHECK(vxFinalizeKernel(kernel));
+        PARAM_ERROR_CHECK(vxFinalizeKernel(kernel));
 	}
 
 	if (status != VX_SUCCESS)
