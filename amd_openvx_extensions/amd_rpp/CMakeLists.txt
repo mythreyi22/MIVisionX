@@ -48,6 +48,7 @@ list (APPEND SOURCES
 	source/absolute_difference.cpp
 	source/bilateral_filter.cpp
 	source/accumulate.cpp
+	source/accumulate_weighted.cpp
 	)
 
 link_directories(/opt/rocm/rpp/lib/)

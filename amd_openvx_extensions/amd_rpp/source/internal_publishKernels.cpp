@@ -61,6 +61,7 @@ vx_status get_kernels_to_publish()
 	STATUS_ERROR_CHECK(ADD_KERENEL(AbsoluteDifference_Register));
 	STATUS_ERROR_CHECK(ADD_KERENEL(BilateralFilter_Register));
 	STATUS_ERROR_CHECK(ADD_KERENEL(Accumulate_Register));
+	STATUS_ERROR_CHECK(ADD_KERENEL(AccumulateWeighted_Register));
 	return status;
 }
 

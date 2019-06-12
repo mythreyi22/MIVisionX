@@ -52,6 +52,7 @@ extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_AbsoluteDifference(vx_
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_BilateralFilter(vx_graph graph, vx_image pSrc1, vx_image pDst,
                                                                           vx_int32 filterSize, vx_float64 sigmaI, vx_float64 sigmaS);
 extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Accumulate(vx_graph graph, vx_image pSrc1, vx_image pSrc2);
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_AccumulateWeighted(vx_graph graph, vx_image pSrc1, vx_image pSrc2, vx_float64 alpha);
 
 
 #endif

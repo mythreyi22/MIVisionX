@@ -242,6 +242,22 @@ extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_Accumulate(vx_graph gr
     return node;
 }
 
+// Creating node for Accumulate Weighted
+extern "C" SHARED_PUBLIC vx_node VX_API_CALL vxExtrppNode_AccumulateWeighted(vx_graph graph, vx_image pSrc1, vx_image pSrc2, vx_float64 alpha) {
+    vx_node node = NULL;
+    vx_context context = vxGetContext((vx_reference)graph);
+    vx_scalar ALPHA = vxCreateScalar(vxGetContext((vx_reference)graph), VX_TYPE_FLOAT64, &alpha);
+    if(vxGetStatus((vx_reference)context) == VX_SUCCESS) {
+        vx_reference params[] = {
+            (vx_reference) pSrc1,
+            (vx_reference) pSrc2,
+            (vx_reference) ALPHA,
+        };
+            node = createNode(graph, VX_KERNEL_RPP_ACCUMULATEWEIGHTED, params, 3);
+    }
+    return node;
+}
+
 // utility functions
 vx_node createNode(vx_graph graph, vx_enum kernelEnum, vx_reference params[], vx_uint32 num)
 {
