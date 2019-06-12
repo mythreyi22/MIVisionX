@@ -31,9 +31,9 @@ THE SOFTWARE.
 
 #include </opt/rocm/rpp/include/rpp.h>
 #include </opt/rocm/rpp/include/rppdefs.h>
-#include </opt/rocm/rpp/include/rppi_image_augumentation_functions.h>
+#include </opt/rocm/rpp/include/rppi_arithmetic_and_logical_functions.h>
 
-struct InclusiveORLocalData {
+struct AccumulateLocalData {
 
 #if ENABLE_OPENCL
     RPPCommonHandle handle;
@@ -41,23 +41,20 @@ struct InclusiveORLocalData {
     RppiSize dimensions;
     RppPtr_t pSrc1;
     RppPtr_t pSrc2;
-    RppPtr_t pDst;
 
 #if ENABLE_OPENCL
     cl_mem cl_pSrc1;
     cl_mem cl_pSrc2;
-    cl_mem cl_pDst;
 #endif
 
 #if ENABLE_HIP
     void *hip_pSrc2;
     void *hip_pSrc1;
-    void *hip_pDst;
 #endif
 
 };
 
-static vx_status VX_CALLBACK validateInclusiveOR(vx_node node, const vx_reference parameters[], vx_uint32 num, vx_meta_format metas[])
+static vx_status VX_CALLBACK validateAccumulate(vx_node node, const vx_reference parameters[], vx_uint32 num, vx_meta_format metas[])
 {
  // check scalar alpha and beta type
     vx_status status = VX_SUCCESS;
@@ -69,19 +66,19 @@ static vx_status VX_CALLBACK validateInclusiveOR(vx_node node, const vx_referenc
     STATUS_ERROR_CHECK(vxQueryImage(image, VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
     if (df_image != VX_DF_IMAGE_U8 || df_image != VX_DF_IMAGE_RGB)
             status = VX_ERROR_INVALID_VALUE;
-    STATUS_ERROR_CHECK(vxSetMetaFormatAttribute(metas[2], VX_IMAGE_FORMAT, &df_image, sizeof(df_image)));
+    STATUS_ERROR_CHECK(vxSetMetaFormatAttribute(metas[0], VX_IMAGE_FORMAT, &df_image, sizeof(df_image)));
      vx_uint32  height, width;
     STATUS_ERROR_CHECK(vxQueryImage(image, VX_IMAGE_ATTRIBUTE_HEIGHT, &height, sizeof(height)));
-    STATUS_ERROR_CHECK(vxSetMetaFormatAttribute(metas[2], VX_IMAGE_HEIGHT, &height, sizeof(height)));
+    STATUS_ERROR_CHECK(vxSetMetaFormatAttribute(metas[0], VX_IMAGE_HEIGHT, &height, sizeof(height)));
     STATUS_ERROR_CHECK(vxQueryImage(image, VX_IMAGE_ATTRIBUTE_WIDTH, &width, sizeof(width)));
-    STATUS_ERROR_CHECK(vxSetMetaFormatAttribute(metas[2], VX_IMAGE_WIDTH, &width, sizeof(width)));
+    STATUS_ERROR_CHECK(vxSetMetaFormatAttribute(metas[0], VX_IMAGE_WIDTH, &width, sizeof(width)));
     vxReleaseImage(&image);
     return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK processInclusiveOR(vx_node node, const vx_reference * parameters, vx_uint32 num)
+static vx_status VX_CALLBACK processAccumulate(vx_node node, const vx_reference * parameters, vx_uint32 num)
 {
-    InclusiveORLocalData * data = NULL;
+    AccumulateLocalData * data = NULL;
     STATUS_ERROR_CHECK(vxQueryNode(node, VX_NODE_LOCAL_DATA_PTR, &data, sizeof(data)));
     vx_df_image df_image = VX_DF_IMAGE_VIRT;
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_FORMAT, &df_image, sizeof(df_image)));
@@ -93,26 +90,36 @@ static vx_status VX_CALLBACK processInclusiveOR(vx_node node, const vx_reference
     cl_command_queue handle = data->handle.cmdq;
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc1, sizeof(data->cl_pSrc1)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc2, sizeof(data->cl_pSrc2)));
-    STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[2], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
     if (df_image == VX_DF_IMAGE_U8 ){
-        std::cerr<<"\n 1 channel";
-        rppi_inclusive_OR_u8_pln1_gpu((void *)data->cl_pSrc1, (void *)data->cl_pSrc2, data->dimensions, (void*)data->cl_pDst, (void *)handle);
+        rppi_accumulate_u8_pln1_gpu((void *)data->cl_pSrc1, (void *)data->cl_pSrc2, data->dimensions, (void *)handle);
     }
     else if(df_image == VX_DF_IMAGE_RGB) {
-        rppi_inclusive_OR_u8_pkd3_gpu((void *)data->cl_pSrc1, (void *)data->cl_pSrc2, data->dimensions, (void*)data->cl_pDst, (void *)handle);
+        rppi_accumulate_u8_pkd3_gpu((void *)data->cl_pSrc1, (void *)data->cl_pSrc2, data->dimensions, (void *)handle);
     }
     return VX_SUCCESS;
 
 #else
-    // YTBI
-#endif
+
+    // STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc1, sizeof(data->pSrc1)));
+    // STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc2, sizeof(data->pSrc2)));
+    // if (df_image == VX_DF_IMAGE_U8 ){
+    //     rppi_accumulate_u8_pln1_host((void *)data->pSrc1, (void *)data->pSrc2,
+    //                                    data->dimensions);
+    // }
+    // else if(df_image == VX_DF_IMAGE_RGB) {
+    //     rppi_accumulate_u8_pkd3_host((void *)data->pSrc1, (void *)data->pSrc2,
+    //                                    data->dimensions);
+    // }
+    // return VX_SUCCESS;
+
+#endif // ENABLE_OPENCL
 
   return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK initializeInclusiveOR(vx_node node, const vx_reference *parameters, vx_uint32 num)
+static vx_status VX_CALLBACK initializeAccumulate(vx_node node, const vx_reference *parameters, vx_uint32 num)
 {
-    InclusiveORLocalData * data = new InclusiveORLocalData;
+    AccumulateLocalData * data = new AccumulateLocalData;
     memset(data, 0, sizeof(*data));
 
 #if ENABLE_OPENCL
@@ -134,22 +141,22 @@ static vx_status VX_CALLBACK initializeInclusiveOR(vx_node node, const vx_refere
     return VX_SUCCESS;
 }
 
-static vx_status VX_CALLBACK uninitializeInclusiveOR(vx_node node, const vx_reference *parameters, vx_uint32 num)
+static vx_status VX_CALLBACK uninitializeAccumulate(vx_node node, const vx_reference *parameters, vx_uint32 num)
 {
     return VX_SUCCESS;
 }
 
-vx_status InclusiveOR_Register(vx_context context)
+vx_status Accumulate_Register(vx_context context)
 {
     vx_status status = VX_SUCCESS;
-// add kernel to the context with callbacks
-    vx_kernel kernel = vxAddUserKernel(context, "org.rpp.InclusiveOR",
-            VX_KERNEL_INCLUSIVEOR,
-            processInclusiveOR,
-            3,
-            validateInclusiveOR,
-            initializeInclusiveOR,
-            uninitializeInclusiveOR);
+// Add kernel to the context with callbacks
+    vx_kernel kernel = vxAddUserKernel(context, "org.rpp.Accumulate",
+            VX_KERNEL_RPP_ACCUMULATE,
+            processAccumulate,
+            2,
+            validateAccumulate,
+            initializeAccumulate,
+            uninitializeAccumulate);
 
     ERROR_CHECK_OBJECT(kernel);
     #if ENABLE_OPENCL
@@ -161,9 +168,8 @@ vx_status InclusiveOR_Register(vx_context context)
     #endif
     if (kernel)
     {
-        PARAM_ERROR_CHECK(vxAddParameterToKernel(kernel, 0, VX_INPUT, VX_TYPE_IMAGE, VX_PARAMETER_STATE_REQUIRED));
+        PARAM_ERROR_CHECK(vxAddParameterToKernel(kernel, 0, VX_BIDIRECTIONAL, VX_TYPE_IMAGE, VX_PARAMETER_STATE_REQUIRED));
         PARAM_ERROR_CHECK(vxAddParameterToKernel(kernel, 1, VX_INPUT, VX_TYPE_IMAGE, VX_PARAMETER_STATE_REQUIRED));
-        PARAM_ERROR_CHECK(vxAddParameterToKernel(kernel, 2, VX_OUTPUT, VX_TYPE_IMAGE, VX_PARAMETER_STATE_REQUIRED));
         PARAM_ERROR_CHECK(vxFinalizeKernel(kernel));
     }
     if (status != VX_SUCCESS)

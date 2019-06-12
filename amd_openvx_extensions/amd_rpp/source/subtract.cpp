@@ -96,10 +96,10 @@ static vx_status VX_CALLBACK processSubtract(vx_node node, const vx_reference * 
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[2], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
     if (df_image == VX_DF_IMAGE_U8 ){
         std::cerr<<"\n 1 channel";
-        rppi_bitwise_AND_u8_pln1_gpu((void *)data->cl_pSrc1, (void *)data->cl_pSrc2, data->dimensions, (void*)data->cl_pDst, (void *)handle);
+        rppi_subtract_u8_pln1_gpu((void *)data->cl_pSrc1, (void *)data->cl_pSrc2, data->dimensions, (void*)data->cl_pDst, (void *)handle);
     }
     else if(df_image == VX_DF_IMAGE_RGB) {
-        rppi_bitwise_AND_u8_pkd3_gpu((void *)data->cl_pSrc1, (void *)data->cl_pSrc2, data->dimensions, (void*)data->cl_pDst, (void *)handle);
+        rppi_subtract_u8_pkd3_gpu((void *)data->cl_pSrc1, (void *)data->cl_pSrc2, data->dimensions, (void*)data->cl_pDst, (void *)handle);
     }
     return VX_SUCCESS;
 
