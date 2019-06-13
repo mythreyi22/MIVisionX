@@ -100,17 +100,17 @@ static vx_status VX_CALLBACK processAccumulate(vx_node node, const vx_reference 
 
 #else
 
-    // STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc1, sizeof(data->pSrc1)));
-    // STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc2, sizeof(data->pSrc2)));
-    // if (df_image == VX_DF_IMAGE_U8 ){
-    //     rppi_accumulate_u8_pln1_host((void *)data->pSrc1, (void *)data->pSrc2,
-    //                                    data->dimensions);
-    // }
-    // else if(df_image == VX_DF_IMAGE_RGB) {
-    //     rppi_accumulate_u8_pkd3_host((void *)data->pSrc1, (void *)data->pSrc2,
-    //                                    data->dimensions);
-    // }
-    // return VX_SUCCESS;
+     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc1, sizeof(vx_uint8)));
+     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc2, sizeof(vx_uint8)));
+     if (df_image == VX_DF_IMAGE_U8 ){
+         rppi_accumulate_u8_pln1_host((void *)data->pSrc1, (void *)data->pSrc2,
+                                        data->dimensions);
+     }
+     else if(df_image == VX_DF_IMAGE_RGB) {
+         rppi_accumulate_u8_pkd3_host((void *)data->pSrc1, (void *)data->pSrc2,
+                                        data->dimensions);
+     }
+     return VX_SUCCESS;
 
 #endif // ENABLE_OPENCL
 
