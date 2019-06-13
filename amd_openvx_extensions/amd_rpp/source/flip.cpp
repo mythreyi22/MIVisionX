@@ -93,10 +93,10 @@ static vx_status VX_CALLBACK processFlip(vx_node node, const vx_reference * para
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pSrc, sizeof(data->cl_pSrc)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_AMD_OPENCL_BUFFER, &data->cl_pDst, sizeof(data->cl_pDst)));
     if (df_image == VX_DF_IMAGE_U8 ){
-       // rppi_flip_u8_pln1_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, rpp_flipaxis, (void *)handle);
+        rppi_flip_u8_pln1_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, rpp_flipaxis, (void *)handle);
     }
     else if(df_image == VX_DF_IMAGE_RGB) {
-       // rppi_flip_u8_pkd3_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, rpp_flipaxis, (void *)handle);
+        rppi_flip_u8_pkd3_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst, rpp_flipaxis, (void *)handle);
     }
 
     return VX_SUCCESS;
@@ -105,10 +105,10 @@ static vx_status VX_CALLBACK processFlip(vx_node node, const vx_reference * para
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
     STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
     if (df_image == VX_DF_IMAGE_U8) {
-        //rppi_flip_u8_pln1_host((void *)data->pSrc, data->dimensions, (void*)data->pDst, rpp_flipaxis);
+        rppi_flip_u8_pln1_host((void *)data->pSrc, data->dimensions, (void*)data->pDst, rpp_flipaxis);
     }
     else if(df_image == VX_DF_IMAGE_RGB) {
-        //rppi_flip_u8_pkd3_host((void *)data->pSrc, data->dimensions, (void*)data->pDst, rpp_flipaxis);
+        rppi_flip_u8_pkd3_host((void *)data->pSrc, data->dimensions, (void*)data->pDst, rpp_flipaxis);
     }
     return VX_SUCCESS;
 #endif
