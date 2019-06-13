@@ -96,7 +96,7 @@ static vx_status VX_CALLBACK processGammaCorrection(vx_node node, const vx_refer
         rppi_gamma_correction_u8_pln1_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->gamma, (void *)handle);
     }
     else if(df_image == VX_DF_IMAGE_RGB) {
-        rppi_gamma_correction_u8_pkd3_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->gamma, (void *)handle);
+       rppi_gamma_correction_u8_pkd3_gpu((void *)data->cl_pSrc, data->dimensions, (void*)data->cl_pDst,  data->gamma, (void *)handle);
     }
     return VX_SUCCESS;
 
@@ -110,16 +110,6 @@ static vx_status VX_CALLBACK processGammaCorrection(vx_node node, const vx_refer
         rppi_gamma_correction_u8_pkd3_host((void *)data->pSrc, data->dimensions, (void*)data->pDst,  data->gamma);
     }
     return VX_SUCCESS;
-    // STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[0], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pSrc, sizeof(vx_uint8)));
-    // STATUS_ERROR_CHECK(vxQueryImage((vx_image)parameters[1], VX_IMAGE_ATTRIBUTE_BUFFER, &data->pDst, sizeof(vx_uint8)));
-    //     if (df_image == VX_DF_IMAGE_U8 ){
-    //         //rppi_brightness_u8_pln1_host(data->pSrc, data->dimensions, data->pDst,  data->gamma, data->beta,data->handle.cpuHandle);
-
-    //     }
-    //     else if(df_image == VX_DF_IMAGE_RGB) {
-    //         //rppi_brightness_u8_pkd3_host(data->pSrc, data->dimensions, data->pDst,  data->gamma, data->beta);
-    //     }
-    // return VX_SUCCESS;
 #endif
 }
 
